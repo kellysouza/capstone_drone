@@ -22,6 +22,25 @@ app.get('/', function(req, res){
 //Whenever someone connects this gets executed
 io.on('connection', function(socket){
   console.log('A user connected');
+  socket.on('takeOff', function () {
+    client.takeoff();
+    console.log('APP Takeoff');
+  });
+  socket.on('land', function () {
+    client.land();
+    console.log('App land');
+  });
+  socket.on('turnLeft', function () {
+    client.clockwise(-0.25);
+    console.log('App left');
+  });
+  socket.on('turnRight', function () {
+    client.clockwise(-0.25);
+    console.log('App right');
+  });
+  socket.on('streamVideo', function () {
+    console.log('App video');
+  });
 
   //Whenever someone disconnects this piece of code executed
   socket.on('disconnect', function () {
