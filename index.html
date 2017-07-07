@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Hello world</title></head>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    function takeOff(){
+      socket.emit('takeOff');
+            document.getElementById('message').innerHTML = "taking off!";
+            console.log("Flying");
+        };
+    function land(){
+      socket.emit('land');
+            document.getElementById('message').innerHTML = "landing!";
+            console.log("landing");
+        };
+    function turnLeft(){
+      socket.emit('turnLeft');
+            document.getElementById('message').innerHTML = "turning left!";
+            console.log("turning left");
+        };
+    function turnRight(){
+      socket.emit('turnRight');
+            document.getElementById('message').innerHTML = "turning right!";
+            console.log("turning right");
+        };
+    function search(){
+      socket.emit('search');
+            document.getElementById('message').innerHTML = "searching!";
+            console.log("searching");
+        };
+    function streamVideo(){
+      socket.emit('streamVideo');
+            document.getElementById('message').innerHTML = "Streaming Video!";
+            console.log("searching");
+            document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
+
+        };
+    // function videoStream(){
+    //   var pngNum = 0;
+    //   pngNum++;
+    //         document.getElementById('video').innerHTML = "PNG!" + pngNum;
+    //         console.log("video stream");
+    //         // document.getElementById('video').innerHTML = "Video On!!";
+    //
+    //     };
+
+
+  </script>
+  <body>
+    <div id="message"> <br /></div>
+    <button type="button" name="button" onclick="takeOff()">Take Off</button>
+    <br />
+    <button type="button" name="button" onclick="land()">Land</button>
+        <br />
+    <button type="button" name="button" onclick="turnLeft()">Turn Left</button>
+        <br />
+    <button type="button" name="button" onclick="turnRight()">Turn Right</button>
+        <br />
+    <button type="button" name="button" onclick="search()">Find Person</button>
+        <br />
+    <button type="button" name="button" onclick="streamVideo()">Stream Video</button>
+        <br />
+        <br />
+    <div id="video">
+    </div>
+  </body>
+</html>
