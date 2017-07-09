@@ -9,19 +9,15 @@ var arDroneConstants = require('ar-drone/lib/constants');
 var client  = arDrone.createClient();
 // var index = require('./index.ejs');
 
-
 require('ar-drone-png-stream')(client, { port: 8080 });
-
-
-
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
 });
 
-//Whenever someone connects this gets executed
 io.on('connection', function(socket){
   console.log('A user connected');
+
   socket.on('takeOff', function () {
     client.takeoff();
     console.log('APP Takeoff');
@@ -42,11 +38,9 @@ io.on('connection', function(socket){
     console.log('App video');
   });
 
-  //Whenever someone disconnects this piece of code executed
   socket.on('disconnect', function () {
     console.log('A user disconnected');
   });
-
 });
 
 server.listen(3000, function(){
