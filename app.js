@@ -7,6 +7,7 @@ var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
 var client  = arDrone.createClient();
+var image = client.getPngStream();
 // var index = require('./index.ejs');
 
 require('ar-drone-png-stream')(client, { port: 8080 });
@@ -36,6 +37,11 @@ io.on('connection', function(socket){
   });
   socket.on('streamVideo', function () {
     console.log('App video');
+  });
+  socket.on('getImage', function () {
+    console.log('getting image');
+    // console.log(image);
+    image.on('data', console.log);
   });
 
   socket.on('disconnect', function () {
