@@ -8,9 +8,10 @@ var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
 var client  = arDrone.createClient();
 var image = client.getPngStream();
+require('ar-drone-png-stream')(client, { port: 8080 });
+require('./env')
 // var index = require('./index.ejs');
 counter = 0;
-require('ar-drone-png-stream')(client, { port: 8080 });
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
@@ -45,8 +46,9 @@ io.on('connection', function(socket){
       var base64Image = new Buffer(theImageData).toString('base64');
       counter++;
       console.log("++++++++++++++++++++++++++++++++++++++");
-      if (counter == 1) {
-        console.log(base64Image);
+      if (counter%10 == 0) {
+        // console.log(base64Image);
+        console.log("IMAGE NOW!!!");
       }
       console.log("++++++++++++++++++++++++++++++++++++++");
     });
