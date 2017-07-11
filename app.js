@@ -6,13 +6,57 @@ var server = require("http").createServer(app);
 var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
-var client  = arDrone.createClient();
-var image = client.getPngStream();
+var drone  = arDrone.createClient({ip: "172.24.18.250"});
+var image = drone.getPngStream();
 var _ = require('lodash');
-require('ar-drone-png-stream')(client, { port: 8080 });
+require('ar-drone-png-stream')(drone, { port: 8080 });
 require('./env')
+
+var request = require('request');
+
+
+// var Client = require('ssh2').Client;
+//
+// var conn = new Client();
+// conn.on('ready', function() {
+//   console.log('Client :: ready');
+//   conn.exec('uptime', function(err, stream) {
+//     if (err) throw err;
+//     stream.on('close', function(code, signal) {
+//       console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+//       conn.end();
+//     }).on('data', function(data) {
+//       console.log('STDOUT: ' + data);
+//     }).stderr.on('data', function(data) {
+//       console.log('STDERR: ' + data);
+//     });
+//   });
+// }).connect({
+//   host: '192.168.100.100',
+//   port: 22,
+//   username: 'frylock',
+//   privateKey: require('fs').readFileSync('/here/is/my/key')
+// });
+
+
+// var options = {
+//   url: 'https://api.kairos.com/detect',
+//   headers: {
+//     'app_id': APP_ID,
+//     'app_key': APP_KEY
+//   },
+//   body: {
+//   "image": IMG
+//   // "selector": "ROLL"
+//   }
+// };
+
+
+
+
+
 // var index = require('./index.ejs');
-counter = 0;
+// counter = 0;
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
@@ -22,19 +66,19 @@ io.on('connection', function(socket){
   console.log('A user connected');
 
   socket.on('takeOff', function () {
-    client.takeoff();
+    drone.takeoff();
     console.log('APP Takeoff');
   });
   socket.on('land', function () {
-    client.land();
+    drone.land();
     console.log('App land');
   });
   socket.on('turnLeft', function () {
-    client.clockwise(-0.25);
+    drone.clockwise(-0.25);
     console.log('App left');
   });
   socket.on('turnRight', function () {
-    client.clockwise(-0.25);
+    drone.clockwise(-0.25);
     console.log('App right');
   });
   socket.on('streamVideo', function () {
@@ -42,18 +86,36 @@ io.on('connection', function(socket){
   });
   socket.on('findPerson', function () {
     console.log('getting image');
+    request.post('https://api.kairos.com/detect', {
+      headers: {
+        'app_id': APP_ID,
+        'app_key': APP_KEY,
+        'image': IMG
+      // "selector": "ROLL"
+      }
+    });
+    console.log("request made");
+    console.log(request);
 
-    image.on('data',  _.throttle(function (theImageData) {
-      var base64Image = new Buffer(theImageData).toString('base64');
-      counter++;
+    // image.on('data',  _.throttle(function (theImageData) {
+      // var base64Image = new Buffer(theImageData).toString('base64');
+      // counter++;
       console.log("++++++++++++++++++++++++++++++++++++++");
-      // if (counter%10 == 0) {
         // console.log(base64Image);
-        console.log("IMAGE NOW!!!");
-        console.log(image);
+        // console.log("IMAGE NOW!!!");
+        // console.log(image);
+        // request.post('https://api.kairos.com/detect', {
+        //   headers: {
+        //     'app_id': APP_ID,
+        //     'app_key': APP_KEY,
+        //     'image': IMG
+        //   // "selector": "ROLL"
+        //   }
+        // });
+        // if (counter%10 == 0) {
       // }
-      console.log("++++++++++++++++++++++++++++++++++++++");
-    }, 1000));
+    //   console.log("++++++++++++++++++++++++++++++++++++++");
+    // }, 1000));
 
 
   //   function (theImageData) {
@@ -104,7 +166,7 @@ server.listen(3000, function(){
 
     // app.use('/', index);
 
-    // png = client.getPngStream();
+    // png = drone.getPngStream();
     // png.on('data', function(){
     //
     // });

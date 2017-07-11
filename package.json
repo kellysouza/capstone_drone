@@ -12,8 +12,12 @@
     "ar-drone": "^0.3.3",
     "ar-drone-png-stream": "^2.0.0",
     "express": "^4.15.3",
+    "jdk": "0.0.0",
     "lodash": "^4.17.4",
     "lodash.debounce": "^4.0.8",
-    "socket.io": "^2.0.3"
+    "request": "^2.81.0",
+    "socket.io": "^2.0.3",
+    "ssh2": "^0.5.5",
+    "vagrant": "0.0.1"
   }
 }
