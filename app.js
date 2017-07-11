@@ -8,6 +8,7 @@ var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
 var client  = arDrone.createClient();
 var image = client.getPngStream();
+var _ = require('lodash');
 require('ar-drone-png-stream')(client, { port: 8080 });
 require('./env')
 // var index = require('./index.ejs');
@@ -39,19 +40,39 @@ io.on('connection', function(socket){
   socket.on('streamVideo', function () {
     console.log('App video');
   });
-  socket.on('getImage', function () {
+  socket.on('findPerson', function () {
     console.log('getting image');
-    // console.log(image);
-    image.on('data', function(theImageData) {
+
+    image.on('data',  _.throttle(function (theImageData) {
       var base64Image = new Buffer(theImageData).toString('base64');
       counter++;
       console.log("++++++++++++++++++++++++++++++++++++++");
-      if (counter%10 == 0) {
+      // if (counter%10 == 0) {
         // console.log(base64Image);
         console.log("IMAGE NOW!!!");
-      }
+        console.log(image);
+      // }
       console.log("++++++++++++++++++++++++++++++++++++++");
-    });
+    }, 1000));
+
+
+  //   function (theImageData) {
+  //     var base64Image = new Buffer(theImageData).toString('base64');
+  //     counter++;
+  //     console.log("++++++++++++++++++++++++++++++++++++++");
+  //     // if (counter%10 == 0) {
+  //       // console.log(base64Image);
+  //       console.log("IMAGE NOW!!!");
+  //       console.log(image);
+  //     // }
+  //     console.log("++++++++++++++++++++++++++++++++++++++");
+  //   });
+  //
+  //   var realFunction =
+  //   _.debounce(run, 1500);
+  //
+  //
+  //
   });
 
   socket.on('disconnect', function () {

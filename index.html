@@ -36,8 +36,8 @@
             document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
 
         };
-    function getImage(){
-      socket.emit('getImage');
+    function findPerson(){
+      socket.emit('findPerson');
             document.getElementById('message').innerHTML = "Getting Image!";
             console.log("image");
             // document.getElementById('image').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
@@ -64,10 +64,10 @@
         <br />
     <button type="button" name="button" onclick="turnRight()">Turn Right</button>
         <br />
-    <button type="button" name="button" onclick="search()">Find Person</button>
+    <button type="button" name="button" onclick="findPerson()">Find Person</button>
         <br />
-    <button type="button" name="button" onclick="getImage()">Get Image</button>
-        <br />
+    <!-- <button type="button" name="button" onclick="findPerson()">Get Image</button>
+        <br /> -->
 
     <button type="button" name="button" onclick="streamVideo()">Stream Video</button>
         <br />
