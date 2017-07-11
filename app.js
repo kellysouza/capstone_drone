@@ -6,10 +6,10 @@ var server = require("http").createServer(app);
 var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
-var drone  = arDrone.createClient({ip: "172.24.18.250"});
-var image = drone.getPngStream();
+var client  = arDrone.createClient({ip: "172.24.18.250"});
+var image = client.getPngStream();
 var _ = require('lodash');
-require('ar-drone-png-stream')(drone, { port: 8080 });
+require('ar-drone-png-stream')(client, { port: 8080 });
 require('./env')
 
 var request = require('request');
@@ -66,19 +66,19 @@ io.on('connection', function(socket){
   console.log('A user connected');
 
   socket.on('takeOff', function () {
-    drone.takeoff();
+    client.takeoff();
     console.log('APP Takeoff');
   });
   socket.on('land', function () {
-    drone.land();
+    client.land();
     console.log('App land');
   });
   socket.on('turnLeft', function () {
-    drone.clockwise(-0.25);
+    client.clockwise(-0.25);
     console.log('App left');
   });
   socket.on('turnRight', function () {
-    drone.clockwise(-0.25);
+    client.clockwise(-0.25);
     console.log('App right');
   });
   socket.on('streamVideo', function () {
@@ -166,7 +166,7 @@ server.listen(3000, function(){
 
     // app.use('/', index);
 
-    // png = drone.getPngStream();
+    // png = client.getPngStream();
     // png.on('data', function(){
     //
     // });
