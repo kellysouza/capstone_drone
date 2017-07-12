@@ -15,28 +15,6 @@ require('./env')
 var request = require('request');
 
 
-// var Client = require('ssh2').Client;
-//
-// var conn = new Client();
-// conn.on('ready', function() {
-//   console.log('Client :: ready');
-//   conn.exec('uptime', function(err, stream) {
-//     if (err) throw err;
-//     stream.on('close', function(code, signal) {
-//       console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
-//       conn.end();
-//     }).on('data', function(data) {
-//       console.log('STDOUT: ' + data);
-//     }).stderr.on('data', function(data) {
-//       console.log('STDERR: ' + data);
-//     });
-//   });
-// }).connect({
-//   host: '192.168.100.100',
-//   port: 22,
-//   username: 'frylock',
-//   privateKey: require('fs').readFileSync('/here/is/my/key')
-// });
 
 
 // var options = {
@@ -86,56 +64,42 @@ io.on('connection', function(socket){
   });
   socket.on('findPerson', function () {
     console.log('getting image');
-    request.post('https://api.kairos.com/detect', {
-      headers: {
-        'app_id': APP_ID,
-        'app_key': APP_KEY,
-        'image': IMG
-      // "selector": "ROLL"
-      }
-    });
-    console.log("request made");
-    console.log(request);
 
-    // image.on('data',  _.throttle(function (theImageData) {
-      // var base64Image = new Buffer(theImageData).toString('base64');
+    image.on('data',  _.throttle(function (theImageData) {
+      var base64Image = new Buffer(theImageData).toString('base64');
       // counter++;
       console.log("++++++++++++++++++++++++++++++++++++++");
         // console.log(base64Image);
-        // console.log("IMAGE NOW!!!");
-        // console.log(image);
-        // request.post('https://api.kairos.com/detect', {
-        //   headers: {
-        //     'app_id': APP_ID,
-        //     'app_key': APP_KEY,
-        //     'image': IMG
-        //   // "selector": "ROLL"
-        //   }
-        // });
-        // if (counter%10 == 0) {
-      // }
-    //   console.log("++++++++++++++++++++++++++++++++++++++");
-    // }, 1000));
-
-
-  //   function (theImageData) {
-  //     var base64Image = new Buffer(theImageData).toString('base64');
-  //     counter++;
-  //     console.log("++++++++++++++++++++++++++++++++++++++");
-  //     // if (counter%10 == 0) {
-  //       // console.log(base64Image);
-  //       console.log("IMAGE NOW!!!");
-  //       console.log(image);
-  //     // }
-  //     console.log("++++++++++++++++++++++++++++++++++++++");
-  //   });
-  //
-  //   var realFunction =
-  //   _.debounce(run, 1500);
-  //
-  //
-  //
-  });
+      console.log("IMAGE NOW!!!");
+      // console.log(image);
+      request({
+        method: "POST",
+        uri: 'https://api.kairos.com/detect',
+        headers: {
+          'content-type': 'application/json',
+          'app_id': APP_ID,
+          'app_key': APP_KEY
+        },
+        json: true,
+        body: {
+          // 'image': "https://scontent-sea1-1.xx.fbcdn.net/v/t1.0-9/19958950_1475352612525972_1716954123383503270_n.jpg?oh=4f273d261456765d32663d3772b53b2e&oe=5A10AA31",
+          'image': base64Image,
+          "selector": "ROLL"
+        }
+      }, function(error, response, body) {
+      console.log(response.statusCode)
+        if (body.images) {
+          console.log('body:', body.images[0].faces[0].attributes);
+        } else {
+          console.log("No face found");
+        // console.log(response.headers);
+        // console.log(response);
+        // console.log(response.read());
+        // console.log("+++++++++++++++");
+        // console.log(response.headers['content-type'])
+        }
+      }
+    )}, 2000));
 
   socket.on('disconnect', function () {
     console.log('A user disconnected');
