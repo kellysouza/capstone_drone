@@ -43,6 +43,16 @@
             // document.getElementById('image').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
 
         };
+    function installDrone(){
+      socket.emit('installDrone');
+            document.getElementById('message').innerHTML = "installing!";
+            console.log("installing");
+        };
+    function connectDrone(){
+      socket.emit('connectDrone');
+            document.getElementById('message').innerHTML = "connecting!";
+            console.log("connecting");
+        };
     // function videoStream(){
     //   var pngNum = 0;
     //   pngNum++;
@@ -56,6 +66,10 @@
   </script>
   <body>
     <div id="message"> <br /></div>
+    <button type="button" name="button" onclick="installDrone()">Install Drone</button>
+    <br />
+    <button type="button" name="button" onclick="connectDrone()">Connect Drone</button>
+    <br />
     <button type="button" name="button" onclick="takeOff()">Take Off</button>
     <br />
     <button type="button" name="button" onclick="land()">Land</button>

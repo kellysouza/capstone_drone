@@ -6,11 +6,16 @@ var server = require("http").createServer(app);
 var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
-
-var client  = arDrone.createClient({ip: "172.24.18.250"});
+// var IP = "172.24.18.250"
+// var connectionScript = 'ardrone-wpa2/script/connect "ada-seattle" -p "AdaLovelaceCodesIt" -a 172.24.18.250'
+var IP = "192.168.1.250"
+var connectionScript = 'ardrone-wpa2/script/connect "KKAK" -p "Inanrpbotk!" -a 192.168.1.250'
+var client;
+  // = arDrone.createClient({ip: "172.24.18.250"});
 // var client  = arDrone.createClient({ip: "192.168.1.250"});
 
-var image = client.getPngStream();
+var image;
+ // = client.getPngStream();
 var _ = require('lodash');
 require('ar-drone-png-stream')(client, { port: 8080 });
 require('./env');
@@ -18,7 +23,7 @@ require('./env');
 var request = require('request');
 
 
-// var cmd = require('node-cmd');
+var cmd = require('node-cmd');
 //
 // cmd.run('script/install');
 // cmd.get(
@@ -46,6 +51,33 @@ io.on('connection', function(socket){
     client.takeoff();
     console.log('APP Takeoff');
   });
+  socket.on('installDrone', function () {
+    console.log('APP installing drone');
+    cmd.get(
+      'ardrone-wpa2/script/install',
+      function(err, data, stderr){
+        console.log('installing your drone...\n\n',data, err, stderr)
+        // cmd.get(
+        //     'ardrone-wpa2/script/connect "ada-seattle" -p "AdaLovelaceCodesIt" -a 192.168.1.250',
+        //     function(err, data, stderr){
+        //       console.log('connnecting to your drone...\n\n',data, err, stderr)
+        //     }
+        // );
+      }
+  );
+
+  });
+  socket.on('connectDrone', function () {
+    client = arDrone.createClient({ip: IP });
+     cmd.get(
+      connectionScript,
+      function(err, data, stderr){
+        console.log('connnecting to your drone...\n\n',data, err, stderr)
+      }
+    );
+
+    console.log('APP Connecting Drone');
+  });
   socket.on('land', function () {
     client.land();
     console.log('App land');
@@ -59,6 +91,8 @@ io.on('connection', function(socket){
     console.log('App right');
   });
   socket.on('streamVideo', function () {
+    image = client.getPngStream();
+
     console.log('App video');
   });
   socket.on('findPerson', function () {
