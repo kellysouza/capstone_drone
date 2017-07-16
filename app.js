@@ -6,14 +6,11 @@ var server = require("http").createServer(app);
 var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
-
-// var client  = arDrone.createClient({ip: "172.24.18.250"});
-var client  = arDrone.createClient({ip: "192.168.1.250"});
-
+var client  = arDrone.createClient({ip: "172.24.18.250"});
 var image = client.getPngStream();
 var _ = require('lodash');
 require('ar-drone-png-stream')(client, { port: 8080 });
-require('./env');
+require('./env')
 
 var request = require('request');
 
@@ -77,7 +74,7 @@ io.on('connection', function(socket){
       // console.log(image);
       request({
         method: "POST",
-        uri: 'https://api.kairos.com/verify',
+        uri: 'https://api.kairos.com/detect',
         headers: {
           'content-type': 'application/json',
           'app_id': APP_ID,
@@ -87,19 +84,12 @@ io.on('connection', function(socket){
         body: {
           // 'image': "https://scontent-sea1-1.xx.fbcdn.net/v/t1.0-9/19958950_1475352612525972_1716954123383503270_n.jpg?oh=4f273d261456765d32663d3772b53b2e&oe=5A10AA31",
           'image': base64Image,
-          "subject_id": "Kelly",
-          "gallery_name": "cstest"
+          "selector": "ROLL"
         }
       }, function(error, response, body) {
       console.log(response.statusCode)
-        // if (body.images) {
-          // console.log('body:', body.images[0].transaction.confidence);
         if (body.images) {
-          if (body.images[0].transaction.confidence > 0.59) {
-            console.log("FOUND KELLY!!");
-          } else {
-            console.log("NOT Kelly :( ");
-          }
+          console.log('body:', body.images[0].faces[0].attributes);
         } else {
           console.log("No face found");
         // console.log(response.headers);
@@ -110,7 +100,7 @@ io.on('connection', function(socket){
         }
       }
     )}, 2000));
-});
+
   socket.on('disconnect', function () {
     console.log('A user disconnected');
   });
