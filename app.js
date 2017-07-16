@@ -7,8 +7,8 @@ var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
 
-var client  = arDrone.createClient({ip: "172.24.18.250"});
-// var client  = arDrone.createClient({ip: "192.168.1.250"});
+// var client  = arDrone.createClient({ip: "172.24.18.250"});
+var client  = arDrone.createClient({ip: "192.168.1.250"});
 
 var image = client.getPngStream();
 var _ = require('lodash');
@@ -18,22 +18,26 @@ require('./env');
 var request = require('request');
 
 
-// var cmd = require('node-cmd');
-//
-// cmd.run('script/install');
-// cmd.get(
-//         'ardrone-wpa2/script/install',
-//         function(err, data, stderr){
-//             console.log('installing your drone...\n\n',data, err, stderr)
-//             cmd.get(
-//                     'ardrone-wpa2/script/connect "ada-seattle" -p "AdaLovelaceCodesIt" -a 192.168.1.250',
-//                     function(err, data, stderr){
-//                       console.log('connnecting to your drone...\n\n',data, err, stderr)
-//                     }
-//                 );
-//         }
-//     );
 
+
+// var options = {
+//   url: 'https://api.kairos.com/detect',
+//   headers: {
+//     'app_id': APP_ID,
+//     'app_key': APP_KEY
+//   },
+//   body: {
+//   "image": IMG
+//   // "selector": "ROLL"
+//   }
+// };
+
+
+
+
+
+// var index = require('./index.ejs');
+// counter = 0;
 
 app.get('/', function(req, res){
   res.sendfile('index.html');
@@ -100,18 +104,19 @@ io.on('connection', function(socket){
           console.log("No face found");
         // console.log(response.headers);
         // console.log(response);
+        // console.log(response.read());
         // console.log("+++++++++++++++");
         // console.log(response.headers['content-type'])
         }
       }
     )}, 2000));
 });
-  socket.on('disconnect', function() {
+  socket.on('disconnect', function () {
     console.log('A user disconnected');
   });
 });
 
-server.listen(3000, function() {
+server.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
