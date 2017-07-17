@@ -6,14 +6,23 @@ var server = require("http").createServer(app);
 var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
-var client  = arDrone.createClient({ip: "172.24.18.250"});
+
+var client  = arDrone.createClient({ip: "172.24.18.244"});
+// var client  = arDrone.createClient({ip: "192.168.0.135"});
+// var client  = arDrone.createClient();
+require('ar-drone-png-stream')(client, { port: 8000 });
 var image = client.getPngStream();
+var lastImage;
+var base64Image;
 var _ = require('lodash');
-require('ar-drone-png-stream')(client, { port: 8080 });
-require('./env')
+require('./env');
 
 var request = require('request');
 
+image.on('error', console.log)
+  .on('data', function(pngBuffer) {
+    lastImage = pngBuffer;
+  });
 
 
 
@@ -52,7 +61,6 @@ io.on('connection', function(socket){
     console.log('App land');
   });
   socket.on('turnLeft', function () {
-    client.clockwise(-0.25);
     console.log('App left');
   });
   socket.on('turnRight', function () {
@@ -66,15 +74,12 @@ io.on('connection', function(socket){
     console.log('getting image');
 
     image.on('data',  _.throttle(function (theImageData) {
-      var base64Image = new Buffer(theImageData).toString('base64');
-      // counter++;
+      base64Image = new Buffer(theImageData).toString('base64');
       console.log("++++++++++++++++++++++++++++++++++++++");
-        // console.log(base64Image);
       console.log("IMAGE NOW!!!");
-      // console.log(image);
       request({
         method: "POST",
-        uri: 'https://api.kairos.com/detect',
+        uri: 'https://api.kairos.com/verify',
         headers: {
           'content-type': 'application/json',
           'app_id': APP_ID,
@@ -82,24 +87,54 @@ io.on('connection', function(socket){
         },
         json: true,
         body: {
-          // 'image': "https://scontent-sea1-1.xx.fbcdn.net/v/t1.0-9/19958950_1475352612525972_1716954123383503270_n.jpg?oh=4f273d261456765d32663d3772b53b2e&oe=5A10AA31",
           'image': base64Image,
-          "selector": "ROLL"
+          "subject_id": "Kelly",
+          "gallery_name": "cstest"
         }
       }, function(error, response, body) {
       console.log(response.statusCode)
         if (body.images) {
-          console.log('body:', body.images[0].faces[0].attributes);
+          if (body.images[0].transaction.confidence > 0.59) {
+            console.log("FOUND KELLY!!");
+          } else {
+            console.log("NOT Kelly :( ");
+          }
         } else {
           console.log("No face found");
-        // console.log(response.headers);
-        // console.log(response);
-        // console.log(response.read());
-        // console.log("+++++++++++++++");
-        // console.log(response.headers['content-type'])
         }
       }
     )}, 2000));
+  });
+  socket.on('analyzePerson', function () {
+    console.log('analyzing image');
+    base64Image = lastImage.toString('base64');
+    console.log();
+    console.log("IMAGE NOW!!!");
+    request({
+      method: "POST",
+      uri: 'https://api.kairos.com/detect',
+      headers: {
+        'content-type': 'application/json',
+        'app_id': APP_ID,
+        'app_key': APP_KEY
+      },
+      json: true,
+      body: {
+        'image': base64Image,
+        "selector": "ROLL"
+      }
+    }, function(error, response, body) {
+    console.log(response.statusCode)
+      if (body.images) {
+        console.log('body:', body.images[0].faces[0].attributes);
+        analyzeComplete(base64Image);
+      } else {
+        console.log("No face found");
+      }
+    })
+
+  });
+
 
   socket.on('disconnect', function () {
     console.log('A user disconnected');
