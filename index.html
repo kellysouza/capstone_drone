@@ -3,7 +3,17 @@
   <head><title>Hello world</title></head>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    var socket = io();
+    var socket = io.connect('localhost:3000');
+    function installDrone(){
+      socket.emit('installDrone');
+            document.getElementById('message').innerHTML = "Installing Drone!";
+            console.log("Installing");
+        };
+    function connectDrone(){
+      socket.emit('connectDrone');
+            document.getElementById('message').innerHTML = "Connecting Drone!";
+            console.log("connecting");
+        };
     function takeOff(){
       socket.emit('takeOff');
             document.getElementById('message').innerHTML = "taking off!";
@@ -45,22 +55,29 @@
     function analyzePerson(){
       socket.emit('analyzePerson');
             document.getElementById('message').innerHTML = "Getting Image!";
-            console.log("image");
-            document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
+            console.log("image html");
+            // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
       };
-    function analyzeComplete(base64Image){
-            document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
-      };
+    socket.on('analyzeComplete', function(data){
+            console.log("COMPLETE");
+            var src = "'data:image/png;base64," + data.image + "'"
+            // console.log(src);
+            document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "/>";
+      });
 
 
   </script>
   <body>
     <div id="message"></div>
-        <br>
+      <br>
+    <button type="button" name="button" onclick="installDrone()">Install</button>
+      <br />
+    <button type="button" name="button" onclick="connectDrone()">Connect</button>
+      <br />
     <button type="button" name="button" onclick="takeOff()">Take Off</button>
         <br />
     <button type="button" name="button" onclick="land()">Land</button>
-    <br />
+      <br />
     <button type="button" name="button" onclick="turnLeft()">Turn Left</button>
         <br />
     <button type="button" name="button" onclick="turnRight()">Turn Right</button>
@@ -73,6 +90,6 @@
         <br />
         <br />
     <div id="video"></div>
-    <div id="image"></div>
+    <div id="image">IMAGE HERE</div>
   </body>
 </html>
