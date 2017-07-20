@@ -9,13 +9,18 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Blog Home - Start Bootstrap Template</title>
+    <title>Drone App</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/blog-home.css" rel="stylesheet">
+
+    <link rel="icon"
+     type="image/png"
+     href="/favicon.ico">
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -66,28 +71,55 @@
   function streamVideo(){
     socket.emit('streamVideo');
           document.getElementById('message').innerHTML = "Your drone is streaming Video!";
-          console.log("searching");
+          console.log("Streaming");
           document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
       };
-  function findPerson(){
-    socket.emit('findPerson');
-          document.getElementById('message').innerHTML = "Your done is searching!";
-          console.log("image");
+  function findPerson(data){
+          var name = document.getElementById('name').value;
+          document.getElementById('message').innerHTML = "Your drone is searching for " + name + "!";
+          console.log("FINDING!!!");
+          socket.emit('findPerson', {name: name});
           // document.getElementById('image').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
-
       };
+  socket.on('foundPerson', function(data){
+          console.log(name);
+          console.log("FOUND!!!!!!!!!!!!!!!!!!!!!!!");
+          document.getElementById('message').innerHTML = "FOUND!!";
+          // console.log(data.image);
+          var src = data.image;
+          // console.log(src);
+          document.getElementById('message').innerHTML = "<p>FOUND!!</p><img src='" + src + "' height='130'/>";
+
+    });
   function analyzePerson(){
     socket.emit('analyzePerson');
-          document.getElementById('message').innerHTML = "Your done is analyzing an image!";
+          document.getElementById('message').innerHTML = "Your drone is analyzing an image!";
           console.log("image html");
           // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
     };
   socket.on('analyzeComplete', function(data){
-          console.log("COMPLETE");
+          console.log("Analysis in progress");
           var src = "'data:image/png;base64," + data.image + "'"
           // console.log(src);
           document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
     });
+  socket.on('analysisData', function(data){
+          console.log("Analysis Data");
+          console.log(data);
+          document.getElementById('message').innerHTML = "Image Analyzed!";
+
+          // var src = "'data:image/png;base64," + data.image + "'"
+          // console.log(src);
+          document.getElementById('results').innerHTML = "Analysis Complete!"
+          document.getElementById('analysis').innerHTML =
+          "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
+    });
+    function enrollPerson(){
+      socket.emit('enrollPerson');
+            document.getElementById('message').innerHTML = "Your drone is analyzing an image!";
+            console.log("image html");
+            // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
+      };
 
 
 </script>
@@ -174,57 +206,6 @@
 
                 <div id="video" class="flight"></div>
 
-
-
-
-                <!-- <hr>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore, veritatis, tempora, necessitatibus inventore nisi quam quia repellat ut tempore laborum possimus eum dicta id animi corrupti debitis ipsum officiis rerum.</p>
-                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a> -->
-
-                <!-- <hr> -->
-
-                <!-- Second Blog Post -->
-                <!-- <h2>
-                    <a href="#">Blog Post Title</a>
-                </h2>
-                <p class="lead">
-                    by <a href="index.php">Start Bootstrap</a>
-                </p>
-                <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:45 PM</p>
-                <hr>
-                <img class="img-responsive" src="http://placehold.it/900x300" alt="">
-                <hr>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, quasi, fugiat, asperiores harum voluptatum tenetur a possimus nesciunt quod accusamus saepe tempora ipsam distinctio minima dolorum perferendis labore impedit voluptates!</p>
-                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
-
-                <hr>
-
-                <!-- Third Blog Post -->
-                <!-- <h2>
-                    <a href="#">Blog Post Title</a>
-                </h2>
-                <p class="lead">
-                    by <a href="index.php">Start Bootstrap</a>
-                </p>
-                <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:45 PM</p>
-                <hr>
-                <img class="img-responsive" id="image">
-                <hr>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate, voluptates, voluptas dolore ipsam cumque quam veniam accusantium laudantium adipisci architecto itaque dicta aperiam maiores provident id incidunt autem. Magni, ratione.</p>
-                <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
-
-                <hr>
- -->
-                <!-- Pager -->
-                <!-- <ul class="pager">
-                    <li class="previous">
-                        <a href="#">&larr; Older</a>
-                    </li>
-                    <li class="next">
-                        <a href="#">Newer &rarr;</a>
-                    </li>
-                </ul>
- -->
             </div>
 
             <!-- Blog Sidebar Widgets Column -->
@@ -237,34 +218,60 @@
               </div>
 
                 <!-- Blog Search Well -->
-                <div class="well">
-                    <h4>Search for Someone</h4>
-                    <div class="input-group">
-                        <input type="text" class="form-control">
+
+                       <!-- <fieldset >
+                         <legend>Search for Someone</legend>
+                         <span class="input-group-btn">
+                           <input type="text" placeholder="Name" id="name" name="name" class="form-control" onclick="findPerson()"/>
+                           <input type="submit" value="Search" class="btn btn-primary col-lg-12" />
+                         </span>
+                       </fieldset> -->
+                     <form id="search" >
+                       <div class="well">
+                         <h4>Search for Someone</h4>
+                         <div class="input-group">
+                        <input type="text" placeholder="Name" id="name" name="name" class="form-control">
                         <span class="input-group-btn">
-                            <button class="btn btn-default" type="button" name="button" onclick="findPerson()">
+                            <button class="btn btn-primary" type="button"  onclick="findPerson()">
                                 <span class="glyphicon glyphicon-search"></span>
                         </button>
                         </span>
+                     </form>
+                    </div>
+                  </div>
+
+                    <div>
+                      <form id="enroll" >
+                        <div class="well">
+                          <h4>Enroll Someone</h4>
+                          <p>
+                            Make sure drone video is displaying person you wish to enroll.
+                          </p>
+                          <div class="input-group">
+                         <input type="text" placeholder="Name" id="enrollName" name="enrollName" class="form-control">
+                         <span class="input-group-btn">
+                             <button class="btn btn-primary" type="button"  onclick="enrollPerson()">
+                                 <span class="glyphicon glyphicon-search"></span>
+                         </button>
+                         </span>
+                    </div>
                     </div>
                     <!-- /.input-group -->
-                </div>
 
                 <!-- Blog Categories Well -->
                 <div class="well">
-                    <h4>Analysis</h4>
+                    <h4 id="results">Analyze a Person</h4>
                     <div class="row">
                         <div class="col-lg-6">
-                          <div id="analysis">
                                 <br />
                           <!-- <button type="button" name="button" onclick="findPerson()">Find Person</button> -->
                           <div id="image"><br /></div>
                               <br />
-                          <button type="button" name="button" onclick="analyzePerson()">Analyze Person</button>
+                          <button type="button" name="button" onclick="analyzePerson()">Analyze Now</button>
                               <br />
                               <br />
                               <br />
-                          </div>
+                              <div id="analysis"></div>
 
 
                             <!-- <ul class="list-unstyled">
@@ -281,14 +288,18 @@
                         <!-- /.col-lg-6 -->
                         <div class="col-lg-12">
                             <ul class="list-unstyled">
-                                <li>Age:
+                                <li id="age">
                                 </li>
-                                <li>Gender:
+                                <li id="gender">
                                 </li>
-                                <li>Glasses:
+                                <li id="male">
                                 </li>
+                                <li id="female">
                                 </li>
-                                <li>Ethnicity:
+                                <li id="glasses">
+                                </li>
+                                <li id="ethnicity">
+                                </li>
                             </ul>
                         </div>
                         <!-- /.col-lg-6 -->

@@ -13,6 +13,7 @@
     "ar-drone-png-stream": "^2.0.0",
     "express": "^4.15.3",
     "jdk": "0.0.0",
+    "jquery": "^3.2.1",
     "lodash": "^4.17.4",
     "lodash.debounce": "^4.0.8",
     "node-cmd": "^3.0.0",

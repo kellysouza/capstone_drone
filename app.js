@@ -7,8 +7,8 @@ var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
 
-// var client  = arDrone.createClient({ip: "172.24.18.244"});
-var client  = arDrone.createClient({ip: "192.168.1.244"});
+var client  = arDrone.createClient({ip: "172.24.18.244"});
+// var client  = arDrone.createClient({ip: "192.168.1.244"});
 require('ar-drone-png-stream')(client, { port: 8000 });
 var image = client.getPngStream();
 var lastImage;
@@ -18,12 +18,15 @@ require('./env');
 
 var request = require('request');
 
+
 image.on('error', console.log)
-     .on('data', function(pngBuffer) {
-     lastImage = pngBuffer;
-     });
+.on('data', function(pngBuffer) {
+  lastImage = pngBuffer;
+});
 
 var cmd = require('node-cmd');
+
+
 
 
 app.get('/', function(req, res){
@@ -79,11 +82,17 @@ io.on('connection', function(socket){
   socket.on('streamVideo', function () {
     console.log('App video');
   });
-  socket.on('findPerson', function () {
+  socket.on('findPerson', function (name) {
+    var found = false;
     console.log('getting image');
-
-    image.on('data',  _.throttle(function (theImageData) {
-      base64Image = new Buffer(theImageData).toString('base64');
+    console.log(name);
+    // var throttledApi =  _.throttle(internalApiCall, 2000);
+    // image.on('data', throttledApi);
+    //
+    // function internalApiCall(theImageData) {
+    //   if (found) { return; }
+      // base64Image = new Buffer(theImageData).toString('base64');
+      base64Image = IMG;
       console.log("++++++++++++++++++++++++++++++++++++++");
       console.log("IMAGE NOW!!!");
       request({
@@ -97,27 +106,41 @@ io.on('connection', function(socket){
         json: true,
         body: {
           'image': base64Image,
-          "subject_id": "Kelly",
+          "subject_id": name.name,
           "gallery_name": "cstest"
         }
       }, function(error, response, body) {
-      console.log(response.statusCode)
+        console.log(response.statusCode)
+        console.log(body);
+        console.log("Response ++++++++++++++++++++++++++++++");
         if (body.images) {
           if (body.images[0].transaction.confidence > 0.59) {
-            console.log("FOUND KELLY!!");
+            console.log("FOUND" + name.name + "!!");
+            // fs.writeFileSync("responseFile", JSON.stringify(response))
+            socket.emit('foundPerson', { image: body.uploaded_image_url });
+            // socket.emit('foundPerson', { image: base64Image });
+            found = true;
+            image.removeAllListeners('data');
           } else {
             console.log("NOT Kelly :( ");
           }
         } else {
           console.log("No face found");
         }
-      }
-    )}, 2000));
+      })
+    // )}
+
+    // function apiCall(){
+    //   console.log("API CALL");
+    //   internalTestApiCall, );
+    // }
+
   });
   socket.on('analyzePerson', function () {
+    var data;
     console.log('analyzing image');
-    // base64Image = lastImage.toString('base64');
-    base64Image = IMG;
+    base64Image = lastImage.toString('base64');
+    // base64Image = IMG;
 
     socket.emit('analyzeComplete', { image: base64Image });
     console.log("+++++++++++");
@@ -136,9 +159,15 @@ io.on('connection', function(socket){
         "selector": "ROLL"
       }
     }, function(error, response, body) {
-    console.log(response.statusCode)
+      console.log(response.statusCode)
       if (body.images) {
-        console.log('body:', body.images[0].faces[0].attributes);
+        data = body.images[0].faces[0].attributes
+        // socket.emit('analysisData', { body: body });
+        // console.log('data:', body.images[0].faces[0].attributes);
+        // socket.emit('analysisData', { body: data })
+        // console.log("HERE!!");;
+        // console.log(data);
+        socket.emit('analysisData', { body: data })
       } else {
         console.log("No face found");
       }

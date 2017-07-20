@@ -62,6 +62,15 @@
             console.log("image html");
             // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
       };
+      socket.on('analysisData', function(data){
+        console.log("COMPLETE");
+        console.log(data);
+        document.getElementById('message').innerHTML = "Analyzing!";
+
+        // var src = "'data:image/png;base64," + data.image + "'"
+        // console.log(src);
+        // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='100'/>";
+      });
     socket.on('analyzeComplete', function(data){
             console.log("COMPLETE");
             var src = "'data:image/png;base64," + data.image + "'"
