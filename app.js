@@ -173,6 +173,11 @@ io.on('connection', function(socket){
       }
     })
   });
+  socket.on('enrollPerson', function (name) {
+    console.log('APP enrolling');
+    console.log(name.name);
+
+  });
 
   socket.on('disconnect', function () {
     console.log('A user disconnected');

@@ -115,9 +115,11 @@
           "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
     });
     function enrollPerson(){
-      socket.emit('enrollPerson');
-            document.getElementById('message').innerHTML = "Your drone is analyzing an image!";
-            console.log("image html");
+      var name = document.getElementById('enrollName').value;
+      console.log(name);
+      socket.emit('enrollPerson', {name: name});
+            document.getElementById('message').innerHTML = "Your drone is enrolling a person!";
+            console.log("enrolling person html");
             // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
       };
 
