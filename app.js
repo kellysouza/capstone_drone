@@ -26,16 +26,16 @@ image.on('error', console.log)
 var cmd = require('node-cmd');
 
 
-
-
-
-
-
-
-
-
 app.get('/', function(req, res){
   res.sendfile('index.html');
+});
+
+app.get('/css/bootstrap.min.css', function(req, res){
+  res.sendfile('css/bootstrap.min.css');
+});
+
+app.get('/css/blog-home.css', function(req, res){
+  res.sendfile('css/blog-home.css');
 });
 
 io.on('connection', function(socket){
@@ -116,8 +116,8 @@ io.on('connection', function(socket){
   });
   socket.on('analyzePerson', function () {
     console.log('analyzing image');
-    base64Image = lastImage.toString('base64');
-    // base64Image = IMG;
+    // base64Image = lastImage.toString('base64');
+    base64Image = IMG;
 
     socket.emit('analyzeComplete', { image: base64Image });
     console.log("+++++++++++");
@@ -145,8 +145,6 @@ io.on('connection', function(socket){
     })
   });
 
-
-
   socket.on('disconnect', function () {
     console.log('A user disconnected');
   });
@@ -155,37 +153,3 @@ io.on('connection', function(socket){
 server.listen(3000, function(){
   console.log('listening on *:3000');
 });
-
-    // app.set('port', process.env.PORT || 3000);
-    // app.set('views', __dirname + '/views');
-    // app.set('view engine', 'ejs', { pretty: true });
-    // app.get('/', function(req, res){
-    //   res.sendfile('index.ejs');
-    // });
-    //
-    // server.listen(3000, function(){
-    //   console.log('listening on *:3000');
-    // });
-
-    // app.use(express.favicon());
-    // app.use(express.logger('dev'));
-    // app.use(app.router);
-    // app.use(express.static(path.join(__dirname, 'public')));
-    // app.use("/components", express.static(path.join(__dirname, 'bower_components')));
-    // app.use(require('express-jquery')('/jquery.js'));
-
-    // app.use('/', index);
-
-    // png = client.getPngStream();
-    // png.on('data', function(){
-    //
-    // });
-
-
-// io.sockets.on('connection', function (socket) {
-  // socket.emit('event', { message: 'Welcome to cockpit :-)' });
-// });
-
-// server.listen(app.get('port'), function() {
-//   console.log('AR. Drone WebFlight is listening on port ' + app.get('port'));
-// });
