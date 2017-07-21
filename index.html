@@ -35,69 +35,69 @@
   var socket = io.connect('localhost:3000');
   function installDrone(){
     socket.emit('installDrone');
-          document.getElementById('message').innerHTML = "Installing Drone!";
+          document.getElementById('results').innerHTML = "Installing Drone!";
           console.log("Installing");
       };
   function connectDrone(){
     socket.emit('connectDrone');
-          document.getElementById('message').innerHTML = "Connecting Drone!";
+          document.getElementById('results').innerHTML = "Connecting Drone!";
           console.log("connecting");
       };
   function takeOff(){
     socket.emit('takeOff');
-          document.getElementById('message').innerHTML = "Your drone is taking off!";
+          document.getElementById('results').innerHTML = "Your drone is taking off!";
           console.log("Flying");
       };
   function land(){
     socket.emit('land');
-          document.getElementById('message').innerHTML = "Your drone is landing!";
+          document.getElementById('results').innerHTML = "Your drone is landing!";
           console.log("landing");
       };
   function turnLeft(){
     socket.emit('turnLeft');
-          document.getElementById('message').innerHTML = "Your drone is turning left!";
+          document.getElementById('results').innerHTML = "Your drone is turning left!";
           console.log("turning left");
       };
   function turnRight(){
     socket.emit('turnRight');
-          document.getElementById('message').innerHTML = "Your drone is turning right!";
+          document.getElementById('results').innerHTML = "Your drone is turning right!";
           console.log("turning right");
       };
   function search(){
     socket.emit('search');
-          document.getElementById('message').innerHTML = "Your drone is searching!";
+          document.getElementById('results').innerHTML = "Your drone is searching!";
           console.log("searching");
       };
   function streamVideo(){
     socket.emit('streamVideo');
-          document.getElementById('message').innerHTML = "Your drone is streaming Video!";
+          document.getElementById('results').innerHTML = "Your drone is streaming Video!";
           console.log("Streaming");
           document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
       };
   function findPerson(data){
           var name = document.getElementById('name').value;
-          document.getElementById('message').innerHTML = "Your drone is searching for " + name + "!";
+          document.getElementById('results').innerHTML = "Your drone is searching for " + name + "!";
           console.log("FINDING!!!");
           socket.emit('findPerson', {name: name});
           document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
-
+          document.getElementById('image').innerHTML = "";
+          document.getElementById('analysis').innerHTML ="";
           // document.getElementById('image').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
       };
   socket.on('foundPerson', function(data){
           console.log(name);
           console.log("FOUND!!!!!!!!!!!!!!!!!!!!!!!");
-          document.getElementById('message').innerHTML = "FOUND!!";
+          document.getElementById('results').innerHTML = "FOUND!!";
           // console.log(data.image);
           var src = data.image;
           // console.log(src);
           document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
 
-          document.getElementById('message').innerHTML = "<p>FOUND!!</p><img src='" + src + "' height='130'/>";
-
+          document.getElementById('image').innerHTML = "<img src='" + src + "' height='130'/>";
     });
   function analyzePerson(){
     socket.emit('analyzePerson');
-          document.getElementById('message').innerHTML = "Your drone is analyzing an image!";
+          document.getElementById('results').innerHTML = "Your drone is analyzing an image!";
           console.log("image html");
           // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
     };
@@ -110,11 +110,11 @@
   socket.on('analysisData', function(data){
           console.log("Analysis Data");
           console.log(data);
-          document.getElementById('message').innerHTML = "Image Analyzed!";
+          document.getElementById('results').innerHTML = "Image Analyzed!";
 
           // var src = "'data:image/png;base64," + data.image + "'"
           // console.log(src);
-          document.getElementById('results').innerHTML = "Analysis Complete!"
+          // document.getElementById('analyze').innerHTML = "Analysis Complete!"
           document.getElementById('analysis').innerHTML =
           "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
     });
@@ -122,7 +122,7 @@
       var name = document.getElementById('enrollName').value;
       console.log(name);
       socket.emit('enrollPerson', {name: name});
-            document.getElementById('message').innerHTML = "Your drone is enrolling a person!";
+            document.getElementById('results').innerHTML = "Your drone is enrolling a person!";
             console.log("enrolling person html");
             // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
       };
@@ -130,14 +130,14 @@
             console.log("Enrollement Data");
             console.log("data.body !!!!!!!!!!!!!!!!!!!!!");
             console.log(data.body);
-            document.getElementById('message').innerHTML = "Enrolled Image!";
-            var src = "'data:image/png;base64," + data.body + "'"
+            document.getElementById('results').innerHTML = "Enrollment Complete!";
+            var src = "'" + data.body + "'"
             // console.log(src);
             document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
 
             // var src = "'data:image/png;base64," + data.image + "'"
             // console.log(src);
-            document.getElementById('results').innerHTML = "Enrollment Complete!"
+            // document.getElementById('analyze').innerHTML = "Enrollment Complete!"
             // document.getElementById('analysis').innerHTML =
             // "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
       });
@@ -194,7 +194,7 @@
 
                 <!-- First Blog Post -->
                 <!-- <h2>
-                    <div id="message"><br /></div>
+                    <div id="results"><br /></div>
                 </h2> -->
                 <!-- <p class="lead">
                     by <a href="index.php">Start Bootstrap</a>
@@ -234,8 +234,9 @@
 
               <!-- Message Well -->
               <div class="well">
-                <h4 id="message">Your drone is...</h4>
-
+                <h4 id="results">Your drone is...waiting</h4>
+                <div id="image"><br /></div>
+                <div id="analysis"></div>
               </div>
 
                 <!-- Blog Search Well -->
@@ -247,9 +248,21 @@
                            <input type="submit" value="Search" class="btn btn-primary col-lg-12" />
                          </span>
                        </fieldset> -->
+
+                       <div class="well">
+                         <h4>Analyze a Person</h4>
+                         <!-- <div class="row"> -->
+                         <div class="">
+                           <p>Center the person you would like to analyze on on the drone video and click the analyze button.</p>
+                           <button type="button" class="btn-primary" name="button" onclick="analyzePerson()">Analyze Now</button>
+                         </div>
+                       </div>
+
+
                      <form id="search" >
                        <div class="well">
                          <h4>Search for Someone</h4>
+                       <p>Enter the name of the person you would like to search for. The person must be enrolled prior to searching! </p>
                          <div class="input-group">
                         <input type="text" placeholder="Name" id="name" name="name" class="form-control">
                         <span class="input-group-btn">
@@ -266,7 +279,7 @@
                         <div class="well">
                           <h4>Enroll Someone</h4>
                           <p>
-                            Make sure drone video is displaying person you wish to enroll.
+                            Make sure drone video is displaying person you wish to enroll in the gallery and click the enroll button.
                           </p>
                           <div class="input-group">
                          <input type="text" placeholder="Name" id="enrollName" name="enrollName" class="form-control">
@@ -280,53 +293,7 @@
                     <!-- /.input-group -->
 
                 <!-- Blog Categories Well -->
-                <div class="well">
-                    <h4 id="results">Analyze a Person</h4>
-                    <div class="row">
-                        <div class="col-lg-6">
-                                <br />
-                          <!-- <button type="button" name="button" onclick="findPerson()">Find Person</button> -->
-                          <div id="image"><br /></div>
-                              <br />
-                          <button type="button" name="button" onclick="analyzePerson()">Analyze Now</button>
-                              <br />
-                              <br />
-                              <br />
-                              <div id="analysis"></div>
 
-
-                            <!-- <ul class="list-unstyled">
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                            </ul> -->
-                        </div>
-                        <!-- /.col-lg-6 -->
-                        <div class="col-lg-12">
-                            <ul class="list-unstyled">
-                                <li id="age">
-                                </li>
-                                <li id="gender">
-                                </li>
-                                <li id="male">
-                                </li>
-                                <li id="female">
-                                </li>
-                                <li id="glasses">
-                                </li>
-                                <li id="ethnicity">
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- /.col-lg-6 -->
-                    </div>
-                    <!-- /.row -->
-                </div>
 
                 <!-- Side Widget Well -->
                 <!-- <div class="well">

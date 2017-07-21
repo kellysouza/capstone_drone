@@ -17,15 +17,28 @@ var _ = require('lodash');
 require('./env');
 
 var request = require('request');
-
+var lastImageTime;
 
 image.on('error', console.log)
 .on('data', function(pngBuffer) {
   lastImage = pngBuffer;
+  lastImageTime = new Date().getTime();
+  console.log(lastImageTime);
+  //fire event to create object .trigger event here
+
+  // console.log("new image for last image");
 });
 
 var cmd = require('node-cmd');
 
+function imageTimeOut() {
+  if ( new Date().getTime() - lastImageTime > 3000 ){
+    console.log("TIMED OUT IMAGE!!!!");
+    lastImage = undefined;
+  }
+}
+
+setInterval(imageTimeOut, 2000);
 
 
 
@@ -87,8 +100,10 @@ io.on('connection', function(socket){
     console.log('getting image');
     console.log(name);
     var throttledApi =  _.throttle(internalApiCall, 2000);
-    image.on('data', throttledApi);
-
+    var getNewImage = function (){
+      image.on('data', throttledApi);
+    }
+    getNewImage()
     function internalApiCall(theImageData) {
       if (found) { return; }
       base64Image = new Buffer(theImageData).toString('base64');
@@ -120,7 +135,8 @@ io.on('connection', function(socket){
             socket.emit('foundPerson', { image: body.uploaded_image_url });
             // socket.emit('foundPerson', { image: base64Image });
             found = true;
-            image.removeAllListeners('data');
+            // image.removeAllListeners('data');
+            image.removeListener('data', getNewImage);
           } else {
             console.log("NOT Kelly :( ");
           }
@@ -139,11 +155,11 @@ io.on('connection', function(socket){
   socket.on('analyzePerson', function () {
     var data;
     console.log('analyzing image');
+    console.log("+++++++++++");
     base64Image = lastImage.toString('base64');
     // base64Image = IMG;
 
     socket.emit('analyzeComplete', { image: base64Image });
-    console.log("+++++++++++");
     console.log("IMAGE NOW!!!");
     request({
       method: "POST",
