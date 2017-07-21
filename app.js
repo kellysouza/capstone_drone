@@ -86,13 +86,13 @@ io.on('connection', function(socket){
     var found = false;
     console.log('getting image');
     console.log(name);
-    // var throttledApi =  _.throttle(internalApiCall, 2000);
-    // image.on('data', throttledApi);
-    //
-    // function internalApiCall(theImageData) {
-    //   if (found) { return; }
-      // base64Image = new Buffer(theImageData).toString('base64');
-      base64Image = IMG;
+    var throttledApi =  _.throttle(internalApiCall, 2000);
+    image.on('data', throttledApi);
+
+    function internalApiCall(theImageData) {
+      if (found) { return; }
+      base64Image = new Buffer(theImageData).toString('base64');
+      // base64Image = IMG;
       console.log("++++++++++++++++++++++++++++++++++++++");
       console.log("IMAGE NOW!!!");
       request({
@@ -128,7 +128,7 @@ io.on('connection', function(socket){
           console.log("No face found");
         }
       })
-    // )}
+    }
 
     // function apiCall(){
     //   console.log("API CALL");
@@ -174,8 +174,37 @@ io.on('connection', function(socket){
     })
   });
   socket.on('enrollPerson', function (name) {
+    base64Image = lastImage.toString('base64');
     console.log('APP enrolling');
     console.log(name.name);
+
+    request({
+      method: "POST",
+      uri: 'https://api.kairos.com/enroll',
+      headers: {
+        'content-type': 'application/json',
+        'app_id': APP_ID,
+        'app_key': APP_KEY
+      },
+      json: true,
+      body: {
+        'image': base64Image,
+        "subject_id": name.name,
+        "gallery_name":"cstest"
+      }
+    }, function(error, response, body) {
+      // console.log(response.body)
+      // console.log(response.body.face_id);
+      if (response.body) {
+        if (response.body.face_id) {
+          data = response.body.uploaded_image_url;
+          console.log(data);
+          socket.emit('enrollmentData', { body: data })
+        } else {
+          console.log("No face found");
+        }
+      }
+    })
 
   });
 

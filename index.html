@@ -79,6 +79,8 @@
           document.getElementById('message').innerHTML = "Your drone is searching for " + name + "!";
           console.log("FINDING!!!");
           socket.emit('findPerson', {name: name});
+          document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
+
           // document.getElementById('image').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
       };
   socket.on('foundPerson', function(data){
@@ -88,6 +90,8 @@
           // console.log(data.image);
           var src = data.image;
           // console.log(src);
+          document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
+
           document.getElementById('message').innerHTML = "<p>FOUND!!</p><img src='" + src + "' height='130'/>";
 
     });
@@ -122,6 +126,21 @@
             console.log("enrolling person html");
             // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
       };
+    socket.on('enrollmentData', function(data){
+            console.log("Enrollement Data");
+            console.log("data.body !!!!!!!!!!!!!!!!!!!!!");
+            console.log(data.body);
+            document.getElementById('message').innerHTML = "Enrolled Image!";
+            var src = "'data:image/png;base64," + data.body + "'"
+            // console.log(src);
+            document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
+
+            // var src = "'data:image/png;base64," + data.image + "'"
+            // console.log(src);
+            document.getElementById('results').innerHTML = "Enrollment Complete!"
+            // document.getElementById('analysis').innerHTML =
+            // "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
+      });
 
 
 </script>
