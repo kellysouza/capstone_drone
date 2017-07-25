@@ -6,11 +6,12 @@ var server = require("http").createServer(app);
 var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
+var client;
 
-var client = arDrone.createClient({ip: "172.24.18.245"});
+// var client = arDrone.createClient({ip: "172.24.18.245"});
 // var client  = arDrone.createClient({ip: "192.168.1.244"});
-require('ar-drone-png-stream')(client, { port: 8000 });
-var image = client.getPngStream();
+// require('ar-drone-png-stream')(client, { port: 8000 });
+var image;
 var lastImage;
 var base64Image;
 var _ = require('lodash');
@@ -19,15 +20,15 @@ require('./env');
 var request = require('request');
 var lastImageTime;
 
-image.on('error', console.log)
-image.on('data', function(pngBuffer) {
-  lastImage = pngBuffer;
-  lastImageTime = new Date().getTime();
-  console.log(lastImageTime);
-  //fire event to create object .trigger event here
-
-  // console.log("new image for last image");
-});
+// image.on('error', console.log)
+// image.on('data', function(pngBuffer) {
+//   lastImage = pngBuffer;
+//   lastImageTime = new Date().getTime();
+//   console.log(lastImageTime);
+//   //fire event to create object .trigger event here
+//
+//   // console.log("new image for last image");
+// });
 
 var cmd = require('node-cmd');
 
@@ -62,20 +63,42 @@ io.on('connection', function(socket){
       'ardrone-wpa2/script/install',
       function(err, data, stderr){
         console.log('installing your drone...\n\n',data, err, stderr)
+        error = "Your drone is installed, please press connect"
+        socket.emit('errorHandler', { body: error });
       }
     );
     console.log('APP Install');
   });
   socket.on('connectDrone', function () {
     cmd.get(
-      'ardrone-wpa2/script/connect "ada-seattle" -p "AdaLovelaceCodesIt" -a 192.168.1.244',
+      'ardrone-wpa2/script/connect "ada-seattle" -p "AdaLovelaceCodesIt" -a 172.24.18.245',
       function(err, data, stderr){
         console.log('connnecting to your drone...\n\n',data, err, stderr)
-        // var client  = arDrone.createClient({ip: IPVARIABLE});
+        error = "Your drone is connected, please press start"
+        socket.emit('errorHandler', { body: error });
       }
     );
     console.log('APP Connect');
   });
+  socket.on('startDrone', function () {
+    client  = arDrone.createClient({ip: "172.24.18.245"});
+    console.log('startDrone');
+    require('ar-drone-png-stream')(client, { port: 8000 });
+    image = client.getPngStream();
+    image.on('error', console.log)
+    image.on('data', function(pngBuffer) {
+      lastImage = pngBuffer;
+      lastImageTime = new Date().getTime();
+      // console.log(lastImageTime);
+      //fire event to create object .trigger event here
+
+      // console.log("new image for last image");
+    });
+
+
+  });
+
+
   socket.on('takeOff', function () {
     client.takeoff();
     console.log('APP Takeoff');

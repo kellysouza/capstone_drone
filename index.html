@@ -92,8 +92,9 @@
           document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
       };
   function findPerson(data){
-    document.getElementById('analysis').innerHTML = ""
+    document.getElementById('analysis').innerHTML = "";
           var name = document.getElementById('name').value;
+          document.getElementById('name').value = "";
           document.getElementById('results').innerHTML = "Your drone is searching for " + name + "!";
           console.log("FINDING!!!");
           socket.emit('findPerson', {name: name});
@@ -140,6 +141,8 @@
     function enrollPerson(){
       document.getElementById('analysis').innerHTML = ""
       var name = document.getElementById('enrollName').value;
+      document.getElementById('enrollName').value = "";
+
       console.log(name);
       socket.emit('enrollPerson', {name: name});
             document.getElementById('results').innerHTML = "Your drone is enrolling a person!";
@@ -154,11 +157,18 @@
             var src = "'" + data.body + "'"
             document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
       });
-      socket.on('errorHandler', function(error){
-              console.log(error.body);
-              console.log("__________________________________________________");
-              document.getElementById('results').innerHTML = error.body;
-        });
+    socket.on('errorHandler', function(error){
+            console.log(error.body);
+            console.log("__________________________________________________");
+            document.getElementById('results').innerHTML = error.body;
+      });
+    function startDrone(){
+      document.getElementById('analysis').innerHTML = ""
+      console.log("starting");
+      socket.emit('startDrone');
+            document.getElementById('results').innerHTML = "Your drone is starting up!";
+      };
+
 
 
 </script>
@@ -219,6 +229,14 @@
                 </p> -->
                 <!-- <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p> -->
                 <!-- <hr> -->
+
+                <div class="flight">
+                  <button id="install" type="button" name="button" class="btn btn-warning"onclick="installDrone()">install</button>
+                  <button id="connect" type="button" name="button" class="btn btn-warning"onclick="connectDrone()">connect</button>
+                  <button id="start" type="button" name="button" class="btn btn-warning"onclick="startDrone()">start</button>
+                </div>
+
+
 
                 <div class="flight">
                   <!-- <button id="calibrate" type="button" class="btn btn-success" name="button" onclick="calibrate()">Calibrate</button> -->
