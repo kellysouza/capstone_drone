@@ -7,7 +7,7 @@ var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
 
-var client  = arDrone.createClient({ip: "172.24.18.244"});
+var client = arDrone.createClient({ip: "172.24.18.244"});
 // var client  = arDrone.createClient({ip: "192.168.1.244"});
 require('ar-drone-png-stream')(client, { port: 8000 });
 var image = client.getPngStream();
@@ -20,7 +20,7 @@ var request = require('request');
 var lastImageTime;
 
 image.on('error', console.log)
-.on('data', function(pngBuffer) {
+image.on('data', function(pngBuffer) {
   lastImage = pngBuffer;
   lastImageTime = new Date().getTime();
   console.log(lastImageTime);
@@ -31,14 +31,15 @@ image.on('error', console.log)
 
 var cmd = require('node-cmd');
 
-function imageTimeOut() {
-  if ( new Date().getTime() - lastImageTime > 3000 ){
+function clearLastImageOnTimeout() {
+  if ( new Date().getTime() - lastImageTime > 4000 ){
     console.log("TIMED OUT IMAGE!!!!");
     lastImage = undefined;
+
   }
 }
 
-setInterval(imageTimeOut, 2000);
+setInterval(clearLastImageOnTimeout, 3000);
 
 
 
@@ -56,7 +57,6 @@ app.get('/css/blog-home.css', function(req, res){
 
 io.on('connection', function(socket){
   console.log('A user connected');
-
   socket.on('installDrone', function () {
     cmd.get(
       'ardrone-wpa2/script/install',
@@ -130,18 +130,22 @@ io.on('connection', function(socket){
         console.log("Response ++++++++++++++++++++++++++++++");
         if (body.images) {
           if (body.images[0].transaction.confidence > 0.59) {
-            console.log("FOUND" + name.name + "!!");
+            error = "Found " + name.name + " !!";
             // fs.writeFileSync("responseFile", JSON.stringify(response))
             socket.emit('foundPerson', { image: body.uploaded_image_url });
             // socket.emit('foundPerson', { image: base64Image });
+            socket.emit('errorHandler', { body: error });
             found = true;
             // image.removeAllListeners('data');
             image.removeListener('data', getNewImage);
           } else {
-            console.log("NOT Kelly :( ");
+            error = "NO " + name.name + " yet....  :( ";
+            socket.emit('errorHandler', { body: error });
           }
         } else {
-          console.log("No face found");
+          error = body.Errors[0].Message;
+          console.log(error);
+          socket.emit('errorHandler', { body: error });
         }
       })
     }
@@ -183,9 +187,13 @@ io.on('connection', function(socket){
         // socket.emit('analysisData', { body: data })
         // console.log("HERE!!");;
         // console.log(data);
-        socket.emit('analysisData', { body: data })
+        socket.emit('analysisData', { body: data });
       } else {
-        console.log("No face found");
+        // console.log("No face found");
+        error = body.Errors[0].Message;
+        console.log(error);
+        socket.emit('errorHandler', { body: error });
+        // console.log("+++++++++++++++++++++++++++++");
       }
     })
   });
@@ -214,10 +222,13 @@ io.on('connection', function(socket){
       if (response.body) {
         if (response.body.face_id) {
           data = response.body.uploaded_image_url;
-          console.log(data);
+          // console.log(data);
           socket.emit('enrollmentData', { body: data })
         } else {
-          console.log("No face found");
+          error = body.Errors[0].Message;
+          console.log(error);
+          socket.emit('errorHandler', { body: error });
+
         }
       }
     })
@@ -232,3 +243,9 @@ io.on('connection', function(socket){
 server.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+// server.on('connection', function(socket) {
+//   console.log("A new connection was made by a client.");
+//   socket.setTimeout(30 * 1000);
+//   // 30 second timeout. Change this as you see fit.
+// })

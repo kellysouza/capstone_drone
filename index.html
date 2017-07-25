@@ -63,11 +63,13 @@
           document.getElementById('results').innerHTML = "Your drone is turning right!";
           console.log("turning right");
       };
-  function search(){
-    socket.emit('search');
-          document.getElementById('results').innerHTML = "Your drone is searching!";
-          console.log("searching");
-      };
+  // function search(){
+  //   socket.emit('search');
+  //         document.getElementById('results').innerHTML = "Your drone is searching!";
+  //         console.log("searching");
+  //         document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
+  //
+  //     };
   function streamVideo(){
     socket.emit('streamVideo');
           document.getElementById('results').innerHTML = "Your drone is streaming Video!";
@@ -75,6 +77,7 @@
           document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
       };
   function findPerson(data){
+    document.getElementById('analysis').innerHTML = ""
           var name = document.getElementById('name').value;
           document.getElementById('results').innerHTML = "Your drone is searching for " + name + "!";
           console.log("FINDING!!!");
@@ -87,7 +90,7 @@
   socket.on('foundPerson', function(data){
           console.log(name);
           console.log("FOUND!!!!!!!!!!!!!!!!!!!!!!!");
-          document.getElementById('results').innerHTML = "FOUND!!";
+          // document.getElementById('results').innerHTML = "FOUND!!";
           // console.log(data.image);
           var src = data.image;
           // console.log(src);
@@ -96,6 +99,7 @@
           document.getElementById('image').innerHTML = "<img src='" + src + "' height='130'/>";
     });
   function analyzePerson(){
+    document.getElementById('analysis').innerHTML = ""
     socket.emit('analyzePerson');
           document.getElementById('results').innerHTML = "Your drone is analyzing an image!";
           console.log("image html");
@@ -119,6 +123,7 @@
           "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
     });
     function enrollPerson(){
+      document.getElementById('analysis').innerHTML = ""
       var name = document.getElementById('enrollName').value;
       console.log(name);
       socket.emit('enrollPerson', {name: name});
@@ -141,6 +146,10 @@
             // document.getElementById('analysis').innerHTML =
             // "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
       });
+      socket.on('errorHandler', function(data){
+              console.log(data);
+              document.getElementById('results').innerHTML = "ERROR: " + data.body;
+        });
 
 
 </script>
@@ -262,7 +271,7 @@
                      <form id="search" >
                        <div class="well">
                          <h4>Search for Someone</h4>
-                       <p>Enter the name of the person you would like to search for. The person must be enrolled prior to searching! </p>
+                       <p>Enter the name of the person you would like to find. The person must be enrolled prior to searching! </p>
                          <div class="input-group">
                         <input type="text" placeholder="Name" id="name" name="name" class="form-control">
                         <span class="input-group-btn">
