@@ -63,6 +63,21 @@
           document.getElementById('results').innerHTML = "Your drone is turning right!";
           console.log("turning right");
       };
+  function forward(){
+    socket.emit('forward');
+          document.getElementById('results').innerHTML = "Your drone is moving forward!";
+          console.log("forward");
+      };
+  function back(){
+    socket.emit('back');
+          document.getElementById('results').innerHTML = "Your drone is moving back!";
+          console.log("back");
+      };
+  // function calibrate(){
+  //   socket.emit('calibrate');
+  //         document.getElementById('results').innerHTML = "Your drone is calibrating !";
+  //         console.log("back");
+  //     };
   // function search(){
   //   socket.emit('search');
   //         document.getElementById('results').innerHTML = "Your drone is searching!";
@@ -137,18 +152,12 @@
             console.log(data.body);
             document.getElementById('results').innerHTML = "Enrollment Complete!";
             var src = "'" + data.body + "'"
-            // console.log(src);
             document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
-
-            // var src = "'data:image/png;base64," + data.image + "'"
-            // console.log(src);
-            // document.getElementById('analyze').innerHTML = "Enrollment Complete!"
-            // document.getElementById('analysis').innerHTML =
-            // "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
       });
-      socket.on('errorHandler', function(data){
-              console.log(data);
-              document.getElementById('results').innerHTML = "ERROR: " + data.body;
+      socket.on('errorHandler', function(error){
+              console.log(error.body);
+              console.log("__________________________________________________");
+              document.getElementById('results').innerHTML = error.body;
         });
 
 
@@ -210,8 +219,16 @@
                 </p> -->
                 <!-- <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p> -->
                 <!-- <hr> -->
+
                 <div class="flight">
+                  <!-- <button id="calibrate" type="button" class="btn btn-success" name="button" onclick="calibrate()">Calibrate</button> -->
+
                   <button id="up" type="button" class="btn btn-success" name="button" onclick="takeOff()">Take Off</button>
+                  <button id="down" type="button" class="btn btn-danger" name="button" onclick="land()">Land</button>
+                </div>
+                <hr>
+                <div class="flight">
+                  <button id="forward" type="button" class="btn btn-warning" name="button" onclick="forward()">Forward</button>
                 </div>
 
                 <div class="flight">
@@ -220,7 +237,7 @@
                 </div>
 
                 <div class="flight">
-                  <button id="down" type="button" class="btn btn-danger" name="button" onclick="land()">Land</button>
+                  <button id="back" type="button" class="btn btn-warning" name="button" onclick="back()">Back</button>
                 </div>
 
                 <hr>

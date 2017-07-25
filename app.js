@@ -7,7 +7,7 @@ var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
 
-var client = arDrone.createClient({ip: "172.24.18.244"});
+var client = arDrone.createClient({ip: "172.24.18.245"});
 // var client  = arDrone.createClient({ip: "192.168.1.244"});
 require('ar-drone-png-stream')(client, { port: 8000 });
 var image = client.getPngStream();
@@ -85,16 +85,37 @@ io.on('connection', function(socket){
     console.log('App land');
   });
   socket.on('turnLeft', function () {
-    client.clockwise(0.25);
+    client.clockwise(-0.25);
     console.log('App left');
   });
   socket.on('turnRight', function () {
-    client.clockwise(-0.25);
+    client.clockwise(0.25);
     console.log('App right');
   });
   socket.on('streamVideo', function () {
     console.log('App video');
   });
+  socket.on('forward', function() {
+    client.front(0.15);
+    client.after(1000, function() {
+      this.stop();
+    })
+  });
+  socket.on('back', function() {
+    client.back(0.15);
+    client.after(1000, function() {
+      this.stop();
+    })
+  });
+  // socket.on('calibrate', function () {
+  //   client.takeoff();
+  //   client.after(2000, function() {
+  //     client.calibrate(0);
+  //   })
+  //   console.log("calibrating");
+  //   client.land(console.log("Finished"));
+  // });
+
   socket.on('findPerson', function (name) {
     var found = false;
     console.log('getting image');
@@ -108,8 +129,8 @@ io.on('connection', function(socket){
       if (found) { return; }
       base64Image = new Buffer(theImageData).toString('base64');
       // base64Image = IMG;
-      console.log("++++++++++++++++++++++++++++++++++++++");
-      console.log("IMAGE NOW!!!");
+      // console.log("++++++++++++++++++++++++++++++++++++++");
+      // console.log("IMAGE NOW!!!");
       request({
         method: "POST",
         uri: 'https://api.kairos.com/verify',
@@ -126,8 +147,8 @@ io.on('connection', function(socket){
         }
       }, function(error, response, body) {
         console.log(response.statusCode)
-        console.log(body);
-        console.log("Response ++++++++++++++++++++++++++++++");
+        // console.log(body);
+        // console.log("Response ++++++++++++++++++++++++++++++");
         if (body.images) {
           if (body.images[0].transaction.confidence > 0.59) {
             error = "Found " + name.name + " !!";
