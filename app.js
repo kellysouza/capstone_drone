@@ -128,12 +128,18 @@ io.on('connection', function(socket){
     console.log('App land');
   });
   socket.on('turnLeft', function () {
-    client.clockwise(-0.25);
+    client.counterClockwise(0.25);
     console.log('App left');
+    client.after(1000, function() {
+      this.stop();
+    })
   });
   socket.on('turnRight', function () {
     client.clockwise(0.25);
     console.log('App right');
+    client.after(1000, function() {
+      this.stop();
+    })
   });
   socket.on('streamVideo', function () {
     console.log('App video');

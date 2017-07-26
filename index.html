@@ -36,7 +36,7 @@ var socket = io.connect('localhost:3000');
 function installDrone(){
   socket.emit('installDrone');
   document.getElementById('results').innerHTML = "Installing Drone!";
-  document.getElementById('install-div').innerHTML = "Installing may take a few minutes.";
+  document.getElementById('install-div').innerHTML = "Installing may take a few minutes. <hr>";
   console.log("Installing");
 };
 // function startDrone(){
@@ -186,7 +186,7 @@ socket.on('errorHandler', function(error){
 
 socket.on('triggerConnect', function(){
   socket.emit('connectDrone');
-  document.getElementById('install-div').innerHTML = "Connecting your drone. Please be patient....";
+  document.getElementById('install-div').innerHTML = "Connecting your drone. Please be patient.... <hr>";
 
   // document.getElementById('results').innerHTML = "Connecting Drone!";
   console.log("connecting html");
@@ -194,12 +194,12 @@ socket.on('triggerConnect', function(){
 });
 socket.on('triggerStart', function(){
   socket.emit('startDrone');
-  document.getElementById('install-div').innerHTML = "Starting Drone...Almost there!!";
+  document.getElementById('install-div').innerHTML = "Starting Drone...Almost there!! <hr>";
   document.getElementById('results').innerHTML = "Starting Drone!";
   console.log("start html");
 });
 socket.on('clearDiv', function () {
-  document.getElementById('install-div').innerHTML = "Drone Ready!!";
+  document.getElementById('install-div').innerHTML = "Drone Ready!! <hr>";
   setTimeout( function (){
     document.getElementById('install-div').innerHTML = "";
   }, 3000)
@@ -265,11 +265,15 @@ socket.on('clearDiv', function () {
   </p> -->
   <!-- <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p> -->
   <!-- <hr> -->
-  <div class="flight" id="install">
-    <button id="install" type="button" name="button" class="btn btn-primary"onclick="installDrone()">Install Drone</button>
+  <div id="install-div">
+    <h5>
+      Connect to your drone's wifi and install.
+    </h5>
+    <div class="flight">
+      <button id="install" type="button" name="button" class="btn btn-primary"onclick="installDrone()">Install Drone</button>
+    </div>
+    <hr>
   </div>
-
-  <hr>
 
   <div class="row">
     <div class="col-sm-4">

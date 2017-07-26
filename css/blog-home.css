@@ -21,6 +21,10 @@ footer {
   margin: 1em;
 }
 
+#header {
+  align-items: center;
+  justify-content: center;
+}
 
 
 
