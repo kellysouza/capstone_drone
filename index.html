@@ -3,171 +3,207 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>Drone App</title>
+  <title>Drone App</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link href="css/blog-home.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="css/blog-home.css" rel="stylesheet">
 
-    <link rel="icon"
-     type="image/png"
-     href="/favicon.ico">
+  <link rel="icon"
+  type="image/png"
+  href="/favicon.ico">
 
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
 
 </head>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io.connect('localhost:3000');
-  function installDrone(){
-    socket.emit('installDrone');
-          document.getElementById('results').innerHTML = "Installing Drone!";
-          console.log("Installing");
-      };
-  function connectDrone(){
-    socket.emit('connectDrone');
-          document.getElementById('results').innerHTML = "Connecting Drone!";
-          console.log("connecting");
-      };
-  function takeOff(){
-    socket.emit('takeOff');
-          document.getElementById('results').innerHTML = "Your drone is taking off!";
-          console.log("Flying");
-      };
-  function land(){
-    socket.emit('land');
-          document.getElementById('results').innerHTML = "Your drone is landing!";
-          console.log("landing");
-      };
-  function turnLeft(){
-    socket.emit('turnLeft');
-          document.getElementById('results').innerHTML = "Your drone is turning left!";
-          console.log("turning left");
-      };
-  function turnRight(){
-    socket.emit('turnRight');
-          document.getElementById('results').innerHTML = "Your drone is turning right!";
-          console.log("turning right");
-      };
-  function forward(){
-    socket.emit('forward');
-          document.getElementById('results').innerHTML = "Your drone is moving forward!";
-          console.log("forward");
-      };
-  function back(){
-    socket.emit('back');
-          document.getElementById('results').innerHTML = "Your drone is moving back!";
-          console.log("back");
-      };
-  // function calibrate(){
-  //   socket.emit('calibrate');
-  //         document.getElementById('results').innerHTML = "Your drone is calibrating !";
-  //         console.log("back");
-  //     };
-  // function search(){
-  //   socket.emit('search');
-  //         document.getElementById('results').innerHTML = "Your drone is searching!";
-  //         console.log("searching");
-  //         document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
-  //
-  //     };
-  function streamVideo(){
-    socket.emit('streamVideo');
-          document.getElementById('results').innerHTML = "Your drone is streaming Video!";
-          console.log("Streaming");
-          document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
-      };
-  function findPerson(data){
-    document.getElementById('analysis').innerHTML = "";
-          var name = document.getElementById('name').value;
-          document.getElementById('name').value = "";
-          document.getElementById('results').innerHTML = "Your drone is searching for " + name + "!";
-          console.log("FINDING!!!");
-          socket.emit('findPerson', {name: name});
-          document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
-          document.getElementById('image').innerHTML = "";
-          document.getElementById('analysis').innerHTML ="";
-          // document.getElementById('image').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
-      };
-  socket.on('foundPerson', function(data){
-          console.log(name);
-          console.log("FOUND!!!!!!!!!!!!!!!!!!!!!!!");
-          // document.getElementById('results').innerHTML = "FOUND!!";
-          // console.log(data.image);
-          var src = data.image;
-          // console.log(src);
-          document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
+var socket = io.connect('localhost:3000');
+function installDrone(){
+  socket.emit('installDrone');
+  document.getElementById('results').innerHTML = "Installing Drone!";
+  document.getElementById('install-div').innerHTML = "Installing may take a few minutes.";
+  console.log("Installing");
+};
+// function startDrone(){
+//   socket.emit('startDrone');
+//         document.getElementById('results').innerHTML = "starting Drone!";
+//         console.log("starting");
+//     };
+function takeOff(){
+  socket.emit('takeOff');
+  document.getElementById('results').innerHTML = "Your drone is taking off!";
+  console.log("Flying");
+};
+function land(){
+  socket.emit('land');
+  document.getElementById('results').innerHTML = "Your drone is landing!";
+  console.log("landing");
+};
+function turnLeft(){
+  socket.emit('turnLeft');
+  document.getElementById('results').innerHTML = "Your drone is turning left!";
+  console.log("turning left");
+};
+function turnRight(){
+  socket.emit('turnRight');
+  document.getElementById('results').innerHTML = "Your drone is turning right!";
+  console.log("turning right");
+};
+function forward(){
+  socket.emit('forward');
+  document.getElementById('results').innerHTML = "Your drone is moving forward!";
+  console.log("forward");
+};
+function back(){
+  socket.emit('back');
+  document.getElementById('results').innerHTML = "Your drone is moving back!";
+  console.log("back");
+};
+function up(){
+  socket.emit('altUp');
+  document.getElementById('results').innerHTML = "Your drone is going up!";
+  console.log("up");
+};
+function down(){
+  socket.emit('altDown');
+  document.getElementById('results').innerHTML = "Your drone is going down!";
+  console.log("down");
+};
+// function start(){
+//   // console.log("in html ping line 77");
+//     setTimeout(function () {
+//       socket.emit('startDrone');
+//       console.log("starting");
+//   }, 10000);
+// socket.emit('pingInternet');
+//       document.getElementById('results').innerHTML = "Ping html!";
+//       console.log("ping");
+// };
+// function calibrate(){
+//   socket.emit('calibrate');
+//         document.getElementById('results').innerHTML = "Your drone is calibrating !";
+//         console.log("back");
+//     };
+// function search(){
+//   socket.emit('search');
+//         document.getElementById('results').innerHTML = "Your drone is searching!";
+//         console.log("searching");
+//         document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
+//
+//     };
+function streamVideo(){
+  socket.emit('streamVideo');
+  document.getElementById('results').innerHTML = "Your drone is streaming Video!";
+  console.log("Streaming");
+  document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
+};
+function findPerson(data){
+  document.getElementById('analysis').innerHTML = "";
+  var name = document.getElementById('name').value;
+  document.getElementById('name').value = "";
+  document.getElementById('results').innerHTML = "Your drone is searching for " + name + "!";
+  console.log("FINDING!!!");
+  socket.emit('findPerson', {name: name});
+  document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
+  document.getElementById('image').innerHTML = "";
+  document.getElementById('analysis').innerHTML ="";
+  // document.getElementById('image').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8080/index.html'></iframe>";
+};
+socket.on('foundPerson', function(data){
+  console.log(name);
+  console.log("FOUND!!!!!!!!!!!!!!!!!!!!!!!");
+  // document.getElementById('results').innerHTML = "FOUND!!";
+  // console.log(data.image);
+  var src = data.image;
+  // console.log(src);
+  document.getElementById('video').innerHTML = "<iframe width='640' height='360' src='http://127.0.0.1:8000/index.html'></iframe>";
 
-          document.getElementById('image').innerHTML = "<img src='" + src + "' height='130'/>";
-    });
-  function analyzePerson(){
-    document.getElementById('analysis').innerHTML = ""
-    socket.emit('analyzePerson');
-          document.getElementById('results').innerHTML = "Your drone is analyzing an image!";
-          console.log("image html");
-          // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
-    };
-  socket.on('analyzeComplete', function(data){
-          console.log("Analysis in progress");
-          var src = "'data:image/png;base64," + data.image + "'"
-          // console.log(src);
-          document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
-    });
-  socket.on('analysisData', function(data){
-          console.log("Analysis Data");
-          console.log(data);
-          document.getElementById('results').innerHTML = "Image Analyzed!";
+  document.getElementById('image').innerHTML = "<img src='" + src + "' height='130'/>";
+});
+function analyzePerson(){
+  document.getElementById('analysis').innerHTML = ""
+  socket.emit('analyzePerson');
+  document.getElementById('results').innerHTML = "Your drone is analyzing an image!";
+  console.log("image html");
+  // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
+};
+socket.on('analyzeComplete', function(data){
+  console.log("Analysis in progress");
+  var src = "'data:image/png;base64," + data.image + "'"
+  // console.log(src);
+  document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
+});
+socket.on('analysisData', function(data){
+  console.log("Analysis Data");
+  console.log(data);
+  document.getElementById('results').innerHTML = "Image Analyzed!";
 
-          // var src = "'data:image/png;base64," + data.image + "'"
-          // console.log(src);
-          // document.getElementById('analyze').innerHTML = "Analysis Complete!"
-          document.getElementById('analysis').innerHTML =
-          "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
-    });
-    function enrollPerson(){
-      document.getElementById('analysis').innerHTML = ""
-      var name = document.getElementById('enrollName').value;
-      document.getElementById('enrollName').value = "";
+  // var src = "'data:image/png;base64," + data.image + "'"
+  // console.log(src);
+  // document.getElementById('analyze').innerHTML = "Analysis Complete!"
+  document.getElementById('analysis').innerHTML =
+  "<li> Age: " + data.body.age  + "</li><li> Female: " + parseFloat(data.body.gender.femaleConfidence * 100).toFixed(2) + "% </li></li><li> Male: " + parseFloat(data.body.gender.maleConfidence * 100).toFixed(2) + "% </li><li> Asian: " + parseFloat(data.body.asian * 100).toFixed(2) + "% </li><li> Black: " + parseFloat(data.body.black * 100).toFixed(2)+ "% </li><li> Hispanic: " + parseFloat(data.body.hispanic * 100).toFixed(2) + "% </li><li> White: " + parseFloat(data.body.white  * 100).toFixed(2) + "% </li><li> Other: " + parseFloat(data.body.other * 100).toFixed(2) + "% </li>"
+});
+function enrollPerson(){
+  document.getElementById('analysis').innerHTML = ""
+  var name = document.getElementById('enrollName').value;
+  document.getElementById('enrollName').value = "";
 
-      console.log(name);
-      socket.emit('enrollPerson', {name: name});
-            document.getElementById('results').innerHTML = "Your drone is enrolling a person!";
-            console.log("enrolling person html");
-            // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
-      };
-    socket.on('enrollmentData', function(data){
-            console.log("Enrollement Data");
-            console.log("data.body !!!!!!!!!!!!!!!!!!!!!");
-            console.log(data.body);
-            document.getElementById('results').innerHTML = "Enrollment Complete!";
-            var src = "'" + data.body + "'"
-            document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
-      });
-    socket.on('errorHandler', function(error){
-            console.log(error.body);
-            console.log("__________________________________________________");
-            document.getElementById('results').innerHTML = error.body;
-      });
-    function startDrone(){
-      document.getElementById('analysis').innerHTML = ""
-      console.log("starting");
-      socket.emit('startDrone');
-            document.getElementById('results').innerHTML = "Your drone is starting up!";
-      };
+  console.log(name);
+  socket.emit('enrollPerson', {name: name});
+  document.getElementById('results').innerHTML = "Your drone is enrolling a person!";
+  console.log("enrolling person html");
+  // document.getElementById('image').innerHTML = "<img alt='Embedded Image' src='data:image/png;base64, " + base64Image + " />";
+};
+socket.on('enrollmentData', function(data){
+  console.log("Enrollement Data");
+  console.log("data.body !!!!!!!!!!!!!!!!!!!!!");
+  console.log(data.body);
+  document.getElementById('results').innerHTML = "Enrollment Complete!";
+  var src = "'" + data.body + "'"
+  document.getElementById('image').innerHTML = "<img alt='Embedded Image' src=" + src + "height='130'/>";
+});
+socket.on('errorHandler', function(error){
+  console.log(error.body);
+  console.log("__________________________________________________");
+  document.getElementById('results').innerHTML = error.body;
+});
+
+socket.on('triggerConnect', function(){
+  socket.emit('connectDrone');
+  document.getElementById('install-div').innerHTML = "Connecting your drone. Please be patient....";
+
+  // document.getElementById('results').innerHTML = "Connecting Drone!";
+  console.log("connecting html");
+
+});
+socket.on('triggerStart', function(){
+  socket.emit('startDrone');
+  document.getElementById('install-div').innerHTML = "Starting Drone...Almost there!!";
+  document.getElementById('results').innerHTML = "Starting Drone!";
+  console.log("start html");
+});
+socket.on('clearDiv', function () {
+  document.getElementById('install-div').innerHTML = "Drone Ready!!";
+  setTimeout( function (){
+    document.getElementById('install-div').innerHTML = "";
+  }, 3000)
+});
 
 
 
@@ -175,202 +211,251 @@
 
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <!-- <a class="navbar-brand" href="#">Start Bootstrap</a> -->
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <!-- <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul> -->
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
-
-    <!-- Page Content -->
+  <!-- Navigation -->
+  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- <a class="navbar-brand" href="#">Start Bootstrap</a> -->
+      </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <!-- <ul class="nav navbar-nav">
+        <li>
+        <a href="#">About</a>
+      </li>
+      <li>
+      <a href="#">Services</a>
+    </li>
+    <li>
+    <a href="#">Contact</a>
+  </li>
+</ul> -->
+</div>
+<!-- /.navbar-collapse -->
+</div>
+<!-- /.container -->
+</nav>
 
-        <div class="row">
+<!-- Page Content -->
+<div class="container">
 
-            <!-- Blog Entries Column -->
-            <div class="col-md-8">
+  <div class="row">
 
-                <h1 class="page-header">
-                    Fly Your Drone
-                    <small>from an app</small>
-                </h1>
+    <!-- Blog Entries Column -->
+    <div class="col-md-8">
 
-                <!-- First Blog Post -->
-                <!-- <h2>
-                    <div id="results"><br /></div>
-                </h2> -->
-                <!-- <p class="lead">
-                    by <a href="index.php">Start Bootstrap</a>
-                </p> -->
-                <!-- <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p> -->
-                <!-- <hr> -->
+      <h1 class="page-header">
+        Fly Your Drone
+        <small>from an app</small>
+      </h1>
 
-                <div class="flight">
-                  <button id="install" type="button" name="button" class="btn btn-warning"onclick="installDrone()">install</button>
-                  <button id="connect" type="button" name="button" class="btn btn-warning"onclick="connectDrone()">connect</button>
-                  <button id="start" type="button" name="button" class="btn btn-warning"onclick="startDrone()">start</button>
-                </div>
+      <!-- First Blog Post -->
+      <!-- <h2>
+      <div id="results"><br /></div>
+    </h2> -->
+    <!-- <p class="lead">
+    by <a href="index.php">Start Bootstrap</a>
+  </p> -->
+  <!-- <p><span class="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p> -->
+  <!-- <hr> -->
+  <div class="flight" id="install">
+    <button id="install" type="button" name="button" class="btn btn-primary"onclick="installDrone()">Install Drone</button>
+  </div>
 
+  <hr>
 
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="flight">
+        <!-- <button id="calibrate" type="button" class="btn btn-success" name="button" onclick="calibrate()">Calibrate</button> -->
+        <button id="takeOff" type="button" class="btn btn-success" name="button" onclick="takeOff()">Take Off</button>
+    </div>
+    <div class="flight">
+        <button id="land" type="button" class="btn btn-danger" name="button" onclick="land()">Land</button>
+      </div>
+    </div>
+    <div class="col-sm-4">
 
-                <div class="flight">
-                  <!-- <button id="calibrate" type="button" class="btn btn-success" name="button" onclick="calibrate()">Calibrate</button> -->
+      <div class="flight ">
+        <button id="forward" type="button" class="btn btn-warning" name="button" onclick="forward()">Forward</button>
+      </div>
 
-                  <button id="up" type="button" class="btn btn-success" name="button" onclick="takeOff()">Take Off</button>
-                  <button id="down" type="button" class="btn btn-danger" name="button" onclick="land()">Land</button>
-                </div>
-                <hr>
-                <div class="flight">
-                  <button id="forward" type="button" class="btn btn-warning" name="button" onclick="forward()">Forward</button>
-                </div>
+      <div class="flight">
+        <button id="left" type="button" name="button" class="btn btn-warning"onclick="turnLeft()"> << Turn Left</button>
+        <button id="right" type="button" name="button" class="btn btn-warning"onclick="turnRight()">Turn Right >> </button>
+      </div>
 
-                <div class="flight">
-                  <button id="left" type="button" name="button" class="btn btn-warning"onclick="turnLeft()">Turn Left</button>
-                  <button id="right" type="button" name="button" class="btn btn-warning"onclick="turnRight()">Turn Right</button>
-                </div>
+      <div class="flight">
+        <button id="back" type="button" class="btn btn-warning" name="button" onclick="back()">Back</button>
+      </div>
 
-                <div class="flight">
-                  <button id="back" type="button" class="btn btn-warning" name="button" onclick="back()">Back</button>
-                </div>
-
-                <hr>
-                <div class="flight">
-
-
-
-                <button type="button" class="btn btn-primary" name="button" onclick="streamVideo()">Stream Video</button>
-                </div>
-
-
-
-
-                <div id="video" class="flight"></div>
-
-            </div>
-
-            <!-- Blog Sidebar Widgets Column -->
-            <div class="col-md-4">
-
-              <!-- Message Well -->
-              <div class="well">
-                <h4 id="results">Your drone is...waiting</h4>
-                <div id="image"><br /></div>
-                <div id="analysis"></div>
-              </div>
-
-                <!-- Blog Search Well -->
-
-                       <!-- <fieldset >
-                         <legend>Search for Someone</legend>
-                         <span class="input-group-btn">
-                           <input type="text" placeholder="Name" id="name" name="name" class="form-control" onclick="findPerson()"/>
-                           <input type="submit" value="Search" class="btn btn-primary col-lg-12" />
-                         </span>
-                       </fieldset> -->
-
-                       <div class="well">
-                         <h4>Analyze a Person</h4>
-                         <!-- <div class="row"> -->
-                         <div class="">
-                           <p>Center the person you would like to analyze on on the drone video and click the analyze button.</p>
-                           <button type="button" class="btn-primary" name="button" onclick="analyzePerson()">Analyze Now</button>
-                         </div>
-                       </div>
-
-
-                     <form id="search" >
-                       <div class="well">
-                         <h4>Search for Someone</h4>
-                       <p>Enter the name of the person you would like to find. The person must be enrolled prior to searching! </p>
-                         <div class="input-group">
-                        <input type="text" placeholder="Name" id="name" name="name" class="form-control">
-                        <span class="input-group-btn">
-                            <button class="btn btn-primary" type="button"  onclick="findPerson()">
-                                <span class="glyphicon glyphicon-search"></span>
-                        </button>
-                        </span>
-                     </form>
-                    </div>
-                  </div>
-
-                    <div>
-                      <form id="enroll" >
-                        <div class="well">
-                          <h4>Enroll Someone</h4>
-                          <p>
-                            Make sure drone video is displaying person you wish to enroll in the gallery and click the enroll button.
-                          </p>
-                          <div class="input-group">
-                         <input type="text" placeholder="Name" id="enrollName" name="enrollName" class="form-control">
-                         <span class="input-group-btn">
-                             <button class="btn btn-primary" type="button"  onclick="enrollPerson()">
-                                 <span class="glyphicon glyphicon-search"></span>
-                         </button>
-                         </span>
-                    </div>
-                    </div>
-                    <!-- /.input-group -->
-
-                <!-- Blog Categories Well -->
-
-
-                <!-- Side Widget Well -->
-                <!-- <div class="well">
-                    <h4>Side Widget Well</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
-                </div> -->
-
-            </div>
-
-        </div>
-        <!-- /.row -->
-
-        <hr>
-
-        <!-- Footer -->
-        <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Copyright &copy; Kelly Souza 2017</p>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-            <!-- /.row -->
-        </footer>
 
     </div>
-    <!-- /.container -->
+    <div class="col-sm-4">
+      <!-- <div class="flight"> -->
+      <div class="flight">
+        <button id="up" type="button" class="btn btn-success" name="button" onclick="up()">  Up  </button>
+      </div>
+      <div class="flight">
+        <button id="down" type="button" class="btn btn-danger" name="button" onclick="down()">Down</button>
+      </div>
+    </div>
+  </div>
 
-    <!-- jQuery -->
-    <script src="js/jquery.js"></script>
+  <!-- <div id="install-div" class="flight">
+    <button id="install" type="button" name="button" class="btn btn-warning"onclick="installDrone()">Install Drone</button>
+  </div>
+  <hr> -->
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+
+
+  <!-- <div class="flight">
+    <!-- <button id="calibrate" type="button" class="btn btn-success" name="button" onclick="calibrate()">Calibrate</button> -->
+    <!-- <button id="takeOff" type="button" class="btn btn-success" name="button" onclick="takeOff()">Take Off</button>
+    <button id="land" type="button" class="btn btn-danger" name="button" onclick="land()">Land</button> -->
+  <!-- </div> -->
+  <!-- <hr> -->
+
+
+    <div>
+
+      <!-- <div class="flight ">
+        <button id="forward" type="button" class="btn btn-warning" name="button" onclick="forward()">Forward</button>
+      </div>
+
+      <div class="flight">
+        <button id="left" type="button" name="button" class="btn btn-warning"onclick="turnLeft()">Turn Left</button>
+        <button id="right" type="button" name="button" class="btn btn-warning"onclick="turnRight()">Turn Right</button>
+      </div>
+
+      <div class="flight">
+        <button id="back" type="button" class="btn btn-warning" name="button" onclick="back()">Back</button>
+      </div>
+      <hr>
+      <div class="flight">
+        <button id="up" type="button" class="btn btn-warning" name="button" onclick="up()">  Up  </button>
+        <button id="down" type="button" class="btn btn-warning" name="button" onclick="down()">Down</button>
+      </div> -->
+  </div>
+
+
+  <hr>
+  <div class="flight">
+    <button type="button" class="btn btn-primary" name="button" onclick="streamVideo()">Stream Video</button>
+  </div>
+
+
+
+
+  <div id="video" class="flight"></div>
+
+</div>
+
+<!-- Blog Sidebar Widgets Column -->
+<div class="col-md-4">
+
+  <!-- Message Well -->
+  <div class="well">
+    <h4 id="results">Your drone is...waiting</h4>
+    <div id="image"><br /></div>
+    <div id="analysis"></div>
+  </div>
+
+  <!-- Blog Search Well -->
+
+  <!-- <fieldset >
+  <legend>Search for Someone</legend>
+  <span class="input-group-btn">
+  <input type="text" placeholder="Name" id="name" name="name" class="form-control" onclick="findPerson()"/>
+  <input type="submit" value="Search" class="btn btn-primary col-lg-12" />
+</span>
+</fieldset> -->
+
+<div class="well">
+  <h4>Analyze a Person</h4>
+  <!-- <div class="row"> -->
+  <div class="">
+    <p>Center the person you would like to analyze on on the drone video and click the analyze button.</p>
+    <button type="button" class="btn-primary" name="button" onclick="analyzePerson()">Analyze Now</button>
+  </div>
+</div>
+
+
+<form id="search" >
+  <div class="well">
+    <h4>Search for Someone</h4>
+    <p>Enter the name of the person you would like to find. The person must be enrolled prior to searching! </p>
+    <div class="input-group">
+      <input type="text" placeholder="Name" id="name" name="name" class="form-control">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button"  onclick="findPerson()">
+          <span class="glyphicon glyphicon-search"></span>
+        </button>
+      </span>
+    </form>
+  </div>
+</div>
+
+<div>
+  <form id="enroll" >
+    <div class="well">
+      <h4>Enroll Someone</h4>
+      <p>
+        Make sure drone video is displaying person you wish to enroll in the gallery and click the enroll button.
+      </p>
+      <div class="input-group">
+        <input type="text" placeholder="Name" id="enrollName" name="enrollName" class="form-control">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="button"  onclick="enrollPerson()">
+            <span class="glyphicon glyphicon-search"></span>
+          </button>
+        </span>
+      </div>
+    </div>
+    <!-- /.input-group -->
+
+    <!-- Blog Categories Well -->
+
+
+    <!-- Side Widget Well -->
+    <!-- <div class="well">
+    <h4>Side Widget Well</h4>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+  </div> -->
+
+</div>
+
+</div>
+<!-- /.row -->
+
+<hr>
+
+<!-- Footer -->
+<footer>
+  <div class="row">
+    <div class="col-lg-12">
+      <p>Copyright &copy; Kelly Souza 2017</p>
+    </div>
+    <!-- /.col-lg-12 -->
+  </div>
+  <!-- /.row -->
+</footer>
+
+</div>
+<!-- /.container -->
+
+<!-- jQuery -->
+<script src="js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="js/bootstrap.min.js"></script>
 
 </body>
 

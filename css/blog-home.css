@@ -21,10 +21,20 @@ footer {
   margin: 1em;
 }
 
+
+
+
 #left {
   margin-right: 1em;
 }
 #right {
+  margin-left: 1em;
+}
+/*
+#takeoff {
+  margin-right: 1em;
+}
+#land {
   margin-left: 1em;
 }
 
@@ -33,4 +43,4 @@ footer {
 }
 #down {
   margin-left: 1em;
-}
+}*/

@@ -7,6 +7,7 @@ var io = require('socket.io').listen(server);
 var arDrone = require('ar-drone');
 var arDroneConstants = require('ar-drone/lib/constants');
 var client;
+// var online = navigator.onLine;
 
 // var client = arDrone.createClient({ip: "172.24.18.245"});
 // var client  = arDrone.createClient({ip: "192.168.1.244"});
@@ -58,42 +59,61 @@ app.get('/css/blog-home.css', function(req, res){
 
 io.on('connection', function(socket){
   console.log('A user connected');
+
   socket.on('installDrone', function () {
+    error = "Your drone is installing, please wait...";
+    socket.emit('errorHandler', { body: error });
     cmd.get(
       'ardrone-wpa2/script/install',
       function(err, data, stderr){
-        console.log('installing your drone...\n\n',data, err, stderr)
-        error = "Your drone is installed, please press connect"
-        socket.emit('errorHandler', { body: error });
+        console.log('installing your drone...\n\n',data, err, stderr);
+        socket.emit('triggerConnect');
       }
     );
     console.log('APP Install');
   });
   socket.on('connectDrone', function () {
-    cmd.get(
-      'ardrone-wpa2/script/connect "ada-seattle" -p "AdaLovelaceCodesIt" -a 172.24.18.245',
-      function(err, data, stderr){
-        console.log('connnecting to your drone...\n\n',data, err, stderr)
-        error = "Your drone is connected, please press start"
-        socket.emit('errorHandler', { body: error });
-      }
-    );
-    console.log('APP Connect');
+    setTimeout(function () {
+      console.log("connectDrone");
+      error = "Your drone is connecting, please wait...";
+      socket.emit('errorHandler', { body: error });
+      cmd.get(
+        'ardrone-wpa2/script/connect "ada-seattle" -p "AdaLovelaceCodesIt" -a 172.24.18.245',
+        function(err, data, stderr){
+          console.log('connnecting to your drone...\n\n',data, err, stderr);
+          error = "Your drone is connected, starting now"
+          socket.emit('errorHandler', { body: error });
+
+          console.log("ERROR ++++++++++++++++++++++++");
+          console.log(err);
+          console.log("________________________");
+          socket.emit('triggerStart');
+          // console.log("EMITTING PING");
+        }
+      );
+      console.log('APP Connect');
+    }, 3000);
   });
   socket.on('startDrone', function () {
+    console.log('startDrone app');
+    setTimeout(function() {
     client  = arDrone.createClient({ip: "172.24.18.245"});
-    console.log('startDrone');
     require('ar-drone-png-stream')(client, { port: 8000 });
     image = client.getPngStream();
     image.on('error', console.log)
     image.on('data', function(pngBuffer) {
       lastImage = pngBuffer;
       lastImageTime = new Date().getTime();
+    // socket.emit('errorHandler', { body: error });
       // console.log(lastImageTime);
       //fire event to create object .trigger event here
 
       // console.log("new image for last image");
     });
+    error = "Your drone is ready!!";
+    socket.emit('errorHandler', { body: error });
+    socket.emit('clearDiv');
+  }, 5000);
 
 
   });
@@ -130,6 +150,31 @@ io.on('connection', function(socket){
       this.stop();
     })
   });
+  socket.on('altUp', function() {
+    client.up(0.25);
+    client.after(1000, function() {
+      this.stop();
+    })
+  });
+  socket.on('altDown', function() {
+    client.down(0.25);
+    client.after(1000, function() {
+      this.stop();
+    })
+  });
+
+
+
+  // client.up(speed) / client.down(speed)
+  // socket.on('ping', function() {
+  //
+  //   console.log("Ping APP");
+  //   if (onLine) {
+  //     console.log('online');
+  //   } else {
+  //     console.log('offline');
+  //   }
+  // });
   // socket.on('calibrate', function () {
   //   client.takeoff();
   //   client.after(2000, function() {
